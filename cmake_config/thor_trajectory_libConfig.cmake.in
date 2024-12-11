@@ -1,0 +1,16 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+
+find_dependency(Eigen3 REQUIRED COMPONENTS Core Dense Geometry)
+find_dependency(cnr_logger REQUIRED)
+find_dependency(cnr_param REQUIRED)
+find_dependency(thor_math REQUIRED)
+find_dependency(trajectories_processors_lib)
+
+include("${CMAKE_CURRENT_LIST_DIR}/thor_trajectory_libTargets.cmake")
+
+set_and_check(@PROJECT_NAME@_INCLUDE_DIRS "@PACKAGE_CMAKE_INSTALL_INCLUDEDIR@" ${Eigen3_INCLUDE_DIRS} ${cnr_logger_INCLUDE_DIRS} ${cnr_param_INCLUDE_DIRS}  ${thor_math_INCLUDE_DIRS} ${trajectories_processors_lib_INCLUDE_DIRS})
+set(@PROJECT_NAME@_LIBRARIES @PROJECT_NAME@ ${Eigen3_LIBRAREIS} ${cnr_logger_LIBRARIES} ${cnr_param_LIBRARIES} ${thor_math_LIBRARIES} ${trajectories_processors_lib_LIBRARIES})
+
+check_required_components(@PROJECT_NAME@ ${cnr_logger_LIBRARIES} ${cnr_param_LIBRARIES} ${thor_math_LIBRARIES} ${trajectories_processors_lib_LIBRARIES})

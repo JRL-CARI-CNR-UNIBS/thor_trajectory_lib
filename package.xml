@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!-- <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?> -->
+<package format="3">
+<name>thor_trajectory_lib</name>
+<version>0.0.0</version>
+<description>The thor_trajectory_lib package</description>
+
+<maintainer email="federico.parma@unibs.it"> Federico</maintainer>
+
+<license>TODO</license>
+
+<buildtool_depend condition="$ROS_VERSION == 1">catkin</buildtool_depend>
+<buildtool_depend condition="$ROS_VERSION != 1">cmake</buildtool_depend>
+
+<depend>eigen3</depend>
+<depend>cnr_logger</depend>
+<depend>cnr_param</depend>
+<depend>thor_math</depend>
+<depend>trajectories_processors_lib</depend>
+
+<export>
+    <build_type condition="$ROS_VERSION == 1">catkin</build_type>
+    <build_type condition="$ROS_VERSION != 1">cmake</build_type>
+  </export>
+
+</package>
