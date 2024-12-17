@@ -20,25 +20,29 @@ void YAMLtoCSV(std::string path_in, std::string path_out){
     }
 
     // Write CSV header
-    csv_file << "time,position1,position2,position3,velocity1,velocity2,velocity3\n";
+    csv_file << "time,position1,position2,position3,velocity1,velocity2,velocity3,acceleration1,acceleration2,acceleration3\n";
 
     // Write CSV data
   
-    int max_size =yaml_file["positions"].size() ;
+    int max_size =yaml_file["thor_trajectory_test"]["trajectory"]["positions"].size() ;
     for (int i = 0; i < max_size; ++i) {
 
-        csv_file << yaml_file["time"][i].as<double>() << ",";
+        csv_file << yaml_file["thor_trajectory_test"]["trajectory"]["times"][i].as<double>() << ",";
         for (int j = 0; j < 3; ++j) {    
-            csv_file << yaml_file["positions"][i][j].as<double>() << ",";
+            csv_file << yaml_file["thor_trajectory_test"]["trajectory"]["positions"][i][j].as<double>() << ",";
             }
             
         
         for (int j = 0; j < 3; ++j) {
 
-                csv_file << yaml_file["velocities"][i][j].as<double>() << ",";
+                csv_file << yaml_file["thor_trajectory_test"]["trajectory"]["velocities"][i][j].as<double>() << ",";
             }
         
-        
+        for (int j = 0; j < 3; ++j) {
+
+            csv_file << yaml_file["thor_trajectory_test"]["trajectory"]["accelerations"][i][j].as<double>() << ",";
+        }
+    
         csv_file.seekp(-1, std::ios_base::end); // Remove the last comma
         csv_file << "\n";
     }
@@ -69,10 +73,10 @@ int main(){
     double control_horizon = yaml_path_ns["control_horizon"].as<double>();
     double st = yaml_path_ns["st"].as<double>();
 
-    std::cout << "nax: " << nax << std::endl;
-    std::cout << "nc: " << nc << std::endl;
-    std::cout << "control_horizon: " << control_horizon << std::endl;
-    std::cout << "st: " << st << std::endl;
+    // std::cout << "nax: " << nax << std::endl;
+    // std::cout << "nc: " << nc << std::endl;
+    // std::cout << "control_horizon: " << control_horizon << std::endl;
+    // std::cout << "st: " << st << std::endl;
     
     openmore::QpIntervalsPtr intervals = std::make_shared<openmore::QpIntervals>(nax, nc, control_horizon, st);
 
@@ -99,13 +103,14 @@ int main(){
     DDqmax.setConstant(yaml_path_ns["DDqmax"].as<double>());
     tau_max.setConstant(yaml_path_ns["tau_max"].as<double>());
 
-    std::cout << "qmax: " << qmax.transpose() << std::endl;
-    std::cout << "qmin: " << qmin.transpose() << std::endl;
-    std::cout << "Dqmax: " << Dqmax.transpose() << std::endl;
-    std::cout << "DDqmax: " << DDqmax.transpose() << std::endl;
-    std::cout << "tau_max: " << tau_max.transpose() << std::endl;
+    // std::cout << "qmax: " << qmax.transpose() << std::endl;
+    // std::cout << "qmin: " << qmin.transpose() << std::endl;
+    // std::cout << "Dqmax: " << Dqmax.transpose() << std::endl;
+    // std::cout << "DDqmax: " << DDqmax.transpose() << std::endl;
+    // std::cout << "tau_max: " << tau_max.transpose() << std::endl;
 
     openmore::KinodynamicConstraintsPtr constraints = std::make_shared<openmore::KinodynamicConstraints>(qmax, Dqmax, DDqmax, tau_max, qmin, -Dqmax, -DDqmax, tau_max);
+    openmore::KinodynamicConstraintsPtr constraints_spl = std::make_shared<openmore::KinodynamicConstraints>(qmax, Dqmax, DDqmax, tau_max, qmin, -Dqmax, -DDqmax, tau_max);
 
     std::string package_path = "/home/galileo/Desktop/";
     std::string logger_file = package_path+"logger.yaml";
@@ -118,13 +123,14 @@ int main(){
 
     processor->init(constraints, param_ns, logger, weigths, intervals);    
     bool res = processor->computeTrj(path_in);
-    spline_processor->trj_=processor->trj_;
+    //spline_processor->computeTrj(path_in);
     //Set initial state
     openmore::RobotStatePtr ptr = processor->getTrj()[0]->state_;
     processor-> setInitialState(ptr);
 
     double scaling=1;
     double target_scaling=1;
+    double target_scaling_spl=1;
     double t=0;
     double t_nom=0;
     double dt=st;
@@ -135,39 +141,29 @@ int main(){
     file.close();
     std::ofstream file_spline;
     file_spline.open(package_path + "spline_results.csv", std::ios_base::trunc);
-    file_spline << "time_spline,pos1_spline,pos2_spline,pos3_spline,vel1_spline,vel2_spline,vel3_spline,acc1_spline,acc2_spline,acc3_spline,scaling\n";
+    file_spline << "time_spline,pos1_spline,pos2_spline,pos3_spline,vel1_spline,vel2_spline,vel3_spline,acc1_spline,acc2_spline,acc3_spline,scaling_spl\n";
     file_spline.close();
-
-    while (t<=processor->max_t_+dt)
+    double max_t = processor->getTrjDuration();
+    // std::cout << spline_processor->trj_.back()->state_->vel_[0] << std::endl;
+    // std::cout <<processor->trj_.back()->state_->vel_[0] << std::endl;
+    while (t<=max_t)
     {
         t_nom += dt*scaling;
         t+=dt;
-
-
-        
-        
-        openmore::RobotStatePtr state = std::make_shared<openmore::RobotState>();
-        state->pos_.resize(nax);
-        state->vel_.resize(nax);
-        state->acc_.resize(nax);
-        state->eff_.resize(nax);
-
-       
         openmore::TrjPointPtr point = std::make_shared<openmore::TrjPoint>();
-        openmore::TrjPointPtr point_spl = std::make_shared<openmore::TrjPoint>();
-        double scaling_spl;
-        processor->interpolate(t_nom, point, target_scaling, scaling);
 
+        processor->interpolate(t_nom, point, target_scaling, scaling);
+        
         Eigen::IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]");
         Eigen::VectorXd pos_eigen = Eigen::Map<Eigen::VectorXd>(point->state_->pos_.data(), point->state_->pos_.size());
         Eigen::VectorXd vel_eigen = Eigen::Map<Eigen::VectorXd>(point->state_->vel_.data(), point->state_->vel_.size());
         Eigen::VectorXd acc_eigen = Eigen::Map<Eigen::VectorXd>(point->state_->acc_.data(), point->state_->acc_.size());
         
-        std::cout<<"t_inserito: "<<t<<std::endl;
-        std::cout<<"t interpolato: "<<point->time_from_start_<<std::endl;
+        // std::cout<<"t_inserito: "<<t<<std::endl;
+        // std::cout<<"t interpolato: "<<point->time_from_start_<<std::endl;
 
-        std::cout << "pos: " << pos_eigen.format(CleanFmt) << std::endl;
-        std::cout << "vel: " << vel_eigen.format(CleanFmt) << std::endl;
+        // std::cout << "pos: " << pos_eigen.format(CleanFmt) << std::endl;
+        // std::cout << "vel: " << vel_eigen.format(CleanFmt) << std::endl;
 
         file.open(package_path + "trajectory_results.csv", std::ios_base::app);
         file << t;
@@ -182,29 +178,8 @@ int main(){
         }
         file << "," << scaling << "\n"; 
         file.close();
-
-        spline_processor->interpolate(t_nom, point_spl, target_scaling, scaling_spl);
-        //DA ELIMINARE: salvo i dati della spline in un csv
-        file_spline.open(package_path + "spline_results.csv", std::ios_base::app);
-        file_spline << t;
-        for (int i = 0; i < point_spl->state_->pos_.size(); ++i) {
-            file_spline << "," << point_spl->state_->pos_[i];
-        }
-        for (int i = 0; i < point_spl->state_->vel_.size(); ++i) {
-            file_spline << "," << point_spl->state_->vel_[i];
-        }
-        for (int i = 0; i < point_spl->state_->acc_.size(); ++i) {
-            file_spline << "," << point_spl->state_->acc_[i];
-        }
-        file_spline << "," << target_scaling << "\n";
-        file_spline.close();
-
-        //fine salvataggio
-
-        
-
     }
-
+    
     std :: cout << "TUTTO BENE!" << std::endl;
     return 0;
     //std::cout << order << std::endl;

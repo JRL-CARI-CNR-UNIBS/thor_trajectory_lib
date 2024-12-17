@@ -12,8 +12,8 @@ st              : 0.001
 
 qmax            : 10
 qmin            : -10
-Dqmax           : 10
-DDqmax          : 50
+Dqmax           : 5
+DDqmax          : 10
 tau_max         : 100
 
-spline_order    : 3
+spline_order    : 4

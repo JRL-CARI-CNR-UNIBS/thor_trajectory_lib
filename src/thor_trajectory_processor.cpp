@@ -10,7 +10,9 @@ bool ThorTrajectoryProcessor::interpolate(const double& time, TrjPointPtr& pnt, 
 {
     //TODO da valutare: Posso mettere  questi dati nelle funzioni di inizializzazione/costruttori? nel caso servirebbe un dt sempre fisso. è così?
     //TODO In caso prevedere funzione che mette in init nAx, nc e control_horizon, prevedere funzione che di soluzione in soluzione setta il dt.
-    
+    std::ofstream file_spline;
+    std::string package_path = "/home/galileo/Desktop/";
+
     int nc = intervals_->nc;
     int n_ax = intervals_->nax;
 
@@ -30,6 +32,23 @@ bool ThorTrajectoryProcessor::interpolate(const double& time, TrjPointPtr& pnt, 
         if (i==0){
             // Assign values to traget vectors
             next_Q.head(n_ax) = Eigen::VectorXd::Map(pnt->state_->pos_.data(), n_ax);
+
+             //DA ELIMINARE: salvo i dati della spline in un csv
+            file_spline.open(package_path + "spline_results.csv", std::ios_base::app);
+            file_spline << time;
+            for (int i = 0; i < pnt->state_->pos_.size(); ++i) {
+                file_spline << "," << pnt->state_->pos_[i];
+            }
+            for (int i = 0; i < pnt->state_->vel_.size(); ++i) {
+                file_spline << "," << pnt->state_->vel_[i];
+            }
+            for (int i = 0; i < pnt->state_->acc_.size(); ++i) {
+                file_spline << "," << pnt->state_->acc_[i];
+            }
+            file_spline << "," << target_scaling << "\n";
+            file_spline.close();
+
+            //fine salvataggio
 
             
         }
@@ -138,23 +157,27 @@ bool ThorTrajectoryProcessor::computeTrj(std::string path_in){
         std::cerr << "Error loading file: " << config_path << std::endl;
         return false;
     }
-    std::vector<double> time = yaml_path_ns["time"].as<std::vector<double>>();
+    std::vector<double> time = yaml_path_ns["thor_trajectory_test"]["trajectory"]["times"].as<std::vector<double>>();
     std::vector<std::vector<double>> pos_vec;
     std::vector<std::vector<double>> vel_vec;
+    std::vector<std::vector<double>> acc_vec;
 
 
-    
-    for (const auto& node : yaml_path_ns["positions"]) {
+    for (const auto& node : yaml_path_ns["thor_trajectory_test"]["trajectory"]["positions"]) {
         std::vector<double> vec = node.as<std::vector<double>>();
         pos_vec.push_back(vec);
         
     }
     
-    for (const auto& node : yaml_path_ns["velocities"]) {
+    for (const auto& node : yaml_path_ns["thor_trajectory_test"]["trajectory"]["velocities"]) {
         std::vector<double> vec = node.as<std::vector<double>>();
        vel_vec.push_back(vec);
     }
-   
+    
+    for (const auto& node : yaml_path_ns["thor_trajectory_test"]["trajectory"]["accelerations"]) {
+        std::vector<double> vec = node.as<std::vector<double>>();
+       acc_vec.push_back(vec);
+    }
     
     for (int i =0; i< vel_vec.size(); i++){
         openmore::TrjPointPtr point = std::make_shared<openmore::TrjPoint>();
@@ -167,6 +190,7 @@ bool ThorTrajectoryProcessor::computeTrj(std::string path_in){
         point->time_from_start_ = time[i];
         point->state_->pos_ = pos_vec[i];
         point->state_->vel_ = vel_vec[i]; 
+        point->state_->acc_ = acc_vec[i];
 
         trj_.push_back(point);
         max_t_=time[i];

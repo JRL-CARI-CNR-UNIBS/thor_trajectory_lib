@@ -164,9 +164,7 @@ public:
 
 virtual bool computeTrj(std::string path_in);
 
-  bool computeTrj(){
-      return false;
-  }
+
   
   bool computeTrj(const RobotStatePtr& initial_state){
       return false;
@@ -174,8 +172,7 @@ virtual bool computeTrj(std::string path_in);
   bool computeTrj(const RobotStatePtr& initial_state, const RobotStatePtr& final_state){
       return false;
   }
-
-virtual void setInitialState(const openmore::RobotStatePtr& initial_state);
+  virtual void setInitialState(const openmore::RobotStatePtr& initial_state);
  };
 
 
