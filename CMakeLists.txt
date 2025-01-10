@@ -44,16 +44,14 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${DEPS})
 
 add_library("${PROJECT_NAME}::${PROJECT_NAME}" ALIAS ${PROJECT_NAME})
 
-add_executable(test_thor src/test_thorTraj.cpp)
-target_link_libraries(test_thor PUBLIC ${PROJECT_NAME})
-# ament_target_dependencies(test_thor ${PROJECT_NAME})
+
 
 # Install
 install(DIRECTORY include/openmore
   DESTINATION include)
 
-install(
-  TARGETS ${PROJECT_NAME} test_thor
+  install(
+  TARGETS ${PROJECT_NAME} 
   EXPORT ${PROJECT_NAME}Targets
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
