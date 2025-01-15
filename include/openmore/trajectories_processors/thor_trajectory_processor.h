@@ -47,7 +47,7 @@ typedef std::shared_ptr<ThorTrajectoryProcessor> ThorTrajectoryProcessorPtr;
  * @brief The ThorTrajectoryProcessor class processes trajectories using spline interpolation and MPC
 */
 
-class ThorTrajectoryProcessor: public SplineTrajectoryProcessor
+class ThorTrajectoryProcessor: public virtual SplineTrajectoryProcessor
 {
 
   protected:
