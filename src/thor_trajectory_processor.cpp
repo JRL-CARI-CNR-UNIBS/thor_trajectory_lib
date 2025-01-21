@@ -12,6 +12,12 @@ bool ThorTrajectoryProcessor::interpolate(const double& time, TrjPointPtr& pnt, 
     int nc = intervals_->nc;
     int n_ax = intervals_->nax;
 
+    thor.activateTorqueBounds(false);
+    if (thor.needUpdate())
+    {
+    thor.updateMatrices();
+    }
+
     // Inizialization of the reference vectors
     Eigen::VectorXd target_Dq(nc*n_ax);
     target_Dq.setOnes();
@@ -76,6 +82,7 @@ void ThorTrajectoryProcessor::setIntervals(const QpIntervalsPtr intervals)
 }
 
 void ThorTrajectoryProcessor::setConstraints(){
+    std::cout << kinodynamic_constraints_->max_pos_ << std::endl;
     Eigen::VectorXd qmax = kinodynamic_constraints_->max_pos_;
     Eigen::VectorXd Dqmax = kinodynamic_constraints_->max_vel_;
     Eigen::VectorXd DDqmax = kinodynamic_constraints_->max_acc_;
@@ -90,7 +97,21 @@ void ThorTrajectoryProcessor::setConstraints(){
 
 }
 
+void ThorTrajectoryProcessor::setConstraints(const KinodynamicConstraintsPtr& constraints){
+    std::cout << constraints->max_pos_ << std::endl;
+    Eigen::VectorXd qmax = constraints->max_pos_;
+    Eigen::VectorXd Dqmax = constraints->max_vel_;
+    Eigen::VectorXd DDqmax = constraints->max_acc_;
+    Eigen::VectorXd tau_max = constraints->max_eff_;
 
+    Eigen::VectorXd qmin = constraints->min_pos_;
+    Eigen::VectorXd Dqmin = constraints->min_vel_;
+    Eigen::VectorXd DDqmin = constraints->min_acc_;
+    Eigen::VectorXd tau_min = constraints->min_eff_;
+
+    thor.setConstraints(qmax,qmin,Dqmax,DDqmax,tau_max);
+
+}
 bool ThorTrajectoryProcessor::init(const KinodynamicConstraintsPtr& constraints, const std::string& param_ns, const cnr_logger::TraceLoggerPtr& logger, const QpWeigthPtr weigths, const QpIntervalsPtr intervals){
 
     openmore::SplineTrajectoryProcessor::init(constraints, param_ns, logger);

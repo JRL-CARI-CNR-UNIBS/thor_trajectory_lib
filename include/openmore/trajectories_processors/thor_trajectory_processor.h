@@ -47,7 +47,7 @@ typedef std::shared_ptr<ThorTrajectoryProcessor> ThorTrajectoryProcessorPtr;
  * @brief The ThorTrajectoryProcessor class processes trajectories using spline interpolation and MPC
 */
 
-class ThorTrajectoryProcessor: public SplineTrajectoryProcessor
+class ThorTrajectoryProcessor: public virtual SplineTrajectoryProcessor
 {
 
   protected:
@@ -67,25 +67,33 @@ class ThorTrajectoryProcessor: public SplineTrajectoryProcessor
     ThorTrajectoryProcessor(const KinodynamicConstraintsPtr& constraints,
                             const std::string& param_ns,
                             const cnr_logger::TraceLoggerPtr& logger):
-      SplineTrajectoryProcessor(constraints,param_ns,logger){}
+      SplineTrajectoryProcessor(constraints,param_ns,logger){
+      ThorTrajectoryProcessor::setConstraints(constraints);
+    }
 
     ThorTrajectoryProcessor(const KinodynamicConstraintsPtr& constraints,
                             const std::string& param_ns,
                             const cnr_logger::TraceLoggerPtr& logger,
                             const std::vector<Eigen::VectorXd>& path):
-      SplineTrajectoryProcessor(constraints,param_ns,logger,path){}
+      SplineTrajectoryProcessor(constraints,param_ns,logger,path){
+      ThorTrajectoryProcessor::setConstraints(constraints);
+    }
 
     ThorTrajectoryProcessor(const KinodynamicConstraintsPtr& constraints,
                             const std::string& param_ns,
                             const cnr_logger::TraceLoggerPtr& logger,
                             const spline_order_t& spline_order):
-      SplineTrajectoryProcessor(constraints,param_ns,logger,spline_order){}
+      SplineTrajectoryProcessor(constraints,param_ns,logger,spline_order){
+      ThorTrajectoryProcessor::setConstraints(constraints);
+    }
 
     ThorTrajectoryProcessor(const KinodynamicConstraintsPtr& constraints,
                             const std::string& param_ns, const cnr_logger::TraceLoggerPtr& logger,
                             const std::vector<Eigen::VectorXd>& path,
                             const spline_order_t& spline_order):
-      SplineTrajectoryProcessor(constraints,param_ns,logger,path,spline_order){}
+      SplineTrajectoryProcessor(constraints,param_ns,logger,path,spline_order){
+      ThorTrajectoryProcessor::setConstraints(constraints);
+    }
 
     ThorTrajectoryProcessor(const KinodynamicConstraintsPtr& constraints,
                             const std::string& param_ns, const cnr_logger::TraceLoggerPtr& logger,
@@ -96,7 +104,7 @@ class ThorTrajectoryProcessor: public SplineTrajectoryProcessor
       SplineTrajectoryProcessor(constraints,param_ns,logger,path,spline_order){
         ThorTrajectoryProcessor::setWeigths(weigths);
         ThorTrajectoryProcessor::setIntervals(intervals);
-        ThorTrajectoryProcessor::setConstraints();
+        ThorTrajectoryProcessor::setConstraints(constraints);
         thor.activateTorqueBounds(false);
         if (thor.needUpdate())
         { 
@@ -162,7 +170,7 @@ class ThorTrajectoryProcessor: public SplineTrajectoryProcessor
      * trajectory generation.
      */
     virtual void setConstraints();
-
+    virtual void setConstraints(const KinodynamicConstraintsPtr& constraints);
     /**
      * @brief Sets the initial state of the robot.
      * 
