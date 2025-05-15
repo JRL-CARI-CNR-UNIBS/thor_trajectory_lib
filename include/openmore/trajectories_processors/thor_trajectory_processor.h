@@ -51,15 +51,22 @@ class ThorTrajectoryProcessor: public virtual SplineTrajectoryProcessor
 {
 
   protected:
-
     thor::math::ThorQP thor; // The Thor_math object for solving the QP problem.
-    double dt_ = 1e-3;
+    // double dt_ = 1e-3;
     openmore::QpWeigthPtr weigths_;
     openmore::QpIntervalsPtr intervals_;
 
   public:
 
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
+
+    /**
+   * @brief Default constructor.
+   * Requires a call to init() aftwrwards.
+   */
+    ThorTrajectoryProcessor():
+      SplineTrajectoryProcessor(){}
 
     /**
     * @brief Constructors.
@@ -109,7 +116,7 @@ class ThorTrajectoryProcessor: public virtual SplineTrajectoryProcessor
         if (thor.needUpdate())
         { 
         thor.updateMatrices();
-    }
+        }
       }
 
     /**

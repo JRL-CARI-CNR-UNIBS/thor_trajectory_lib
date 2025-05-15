@@ -6,6 +6,10 @@ if(NOT CMAKE_BUILD_TYPE)
   #set(CMAKE_BUILD_TYPE "Release")
 endif()
 
+if(CMAKE_BUILD_TYPE MATCHES "Release")
+    add_compile_options(-funroll-loops -Wall -Ofast -flto) #-O3
+  endif()
+
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   if(CMAKE_BUILD_TYPE MATCHES "Release")
     add_compile_options(-funroll-loops -Wall -Ofast -flto) #-O3

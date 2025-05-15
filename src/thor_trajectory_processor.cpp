@@ -40,6 +40,8 @@ bool ThorTrajectoryProcessor::interpolate(const double& time, TrjPointPtr& pnt, 
     }
     
     Eigen::VectorXd next_acc(n_ax);
+    Eigen::VectorXd new_acc(n_ax);
+
     Eigen::VectorXd next_vel(n_ax);
     Eigen::VectorXd next_pos(n_ax);
 
@@ -47,13 +49,51 @@ bool ThorTrajectoryProcessor::interpolate(const double& time, TrjPointPtr& pnt, 
     thor.computedCostrainedSolution(target_Dq,next_Q,target_scaling,thor.getState(),next_acc,updated_scaling);
     
     // Update of the solver state and of the solution point
-    next_pos = thor.getState().head(n_ax);
-    next_vel = thor.getState().tail(n_ax);
+   
 
+    // if (!previous_position_.size()){
+    //     previous_position_.resize(n_ax);
+    //     previous_position_ = next_pos;
+    // }
+    // next_vel = (next_pos - previous_position_)/dt_;
+    
+    // if(!previous_velocity_.size()){
+    //     previous_velocity_.resize(n_ax);
+    //     previous_velocity_ = next_vel;
+    // }
+    
+    // new_acc = (next_vel - previous_velocity_)/dt_;
+    // previous_velocity_ = next_vel;
+    // previous_position_ = next_pos;
+    
+    // std::cout << "Next acc: " << next_acc.transpose() << std::endl;
     thor.updateState(next_acc);
-    pnt->state_->acc_.assign(next_acc.data(), next_acc.data() + next_acc.size());
+    next_pos = thor.getState().head(n_ax);
+    next_vel = thor.getState().tail(n_ax)*2;
+    new_acc = next_acc*4;
+    pnt->state_->acc_.assign(new_acc.data(), new_acc.data() + new_acc.size());
     pnt->state_->vel_.assign(next_vel.data(), next_vel.data() + next_vel.size());
     pnt->state_->pos_.assign(next_pos.data(), next_pos.data() + next_pos.size());
+    // std::printf("Target scaling Thor processor: %f\n", target_scaling);
+    std::printf("Updated scaling Thor processor: %f\n", updated_scaling);
+
+
+    // std::printf("Next pos: ");
+    // for (int i = 0; i < next_pos.size(); ++i) {
+    //     std::printf("%f ", next_pos[i]);
+    // }
+    // std::printf("\n");
+    // std::printf("Next vel: ");
+    // for (int i = 0; i < next_vel.size(); ++i) {
+    //     std::printf("%f ", next_vel[i]/2);
+    // }
+    // std::printf("\n");
+    // std::printf("Next acc: ");
+    // for (int i = 0; i < next_acc.size(); ++i) {
+    //     std::printf("%f ", next_acc[i]);
+    // }
+    // std::printf("\n");
+
     return true;
 }
 
