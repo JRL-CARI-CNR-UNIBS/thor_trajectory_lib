@@ -69,13 +69,13 @@ bool ThorTrajectoryProcessor::interpolate(const double& time, TrjPointPtr& pnt, 
     // std::cout << "Next acc: " << next_acc.transpose() << std::endl;
     thor.updateState(next_acc);
     next_pos = thor.getState().head(n_ax);
-    next_vel = thor.getState().tail(n_ax)*2;
-    new_acc = next_acc*4;
+    next_vel = thor.getState().tail(n_ax);
+    new_acc = next_acc;
     pnt->state_->acc_.assign(new_acc.data(), new_acc.data() + new_acc.size());
     pnt->state_->vel_.assign(next_vel.data(), next_vel.data() + next_vel.size());
     pnt->state_->pos_.assign(next_pos.data(), next_pos.data() + next_pos.size());
     // std::printf("Target scaling Thor processor: %f\n", target_scaling);
-    std::printf("Updated scaling Thor processor: %f\n", updated_scaling);
+    // std::printf("Updated scaling Thor processor: %f\n", updated_scaling);
 
 
     // std::printf("Next pos: ");
