@@ -10,13 +10,14 @@ namespace openmore
     //     CNR_FATAL(logger_, "Target_scaling: "<<target_scaling);
     //     return SplineTrajectoryProcessor::interpolate(time, pnt, target_scaling, updated_scaling);
     // }
-    bool ThorTrajectoryProcessor::interpolate(const double& time, TrjPointPtr& pnt, const double& target_scaling, double& updated_scaling)
+    bool ThorTrajectoryProcessor::interpolate(const double& time, TrjPointPtr& pnt, const double& target_scaling, double& updated_scaling, const Eigen::Vector3d &vh, const Eigen::Vector3d &p_human)
     {
 
         int nc = intervals_->nc;
         int n_ax = intervals_->nax;
 
         thor.activateTorqueBounds(false);
+        thor.activateCbfMoveAway(false);
         if (thor.needUpdate())
         {
         thor.updateMatrices();
@@ -50,7 +51,7 @@ namespace openmore
         Eigen::VectorXd next_pos(n_ax);
 
         // Receiding horizon method
-        thor.computedCostrainedSolution(target_Dq,next_Q,target_scaling,thor.getState(),next_acc,updated_scaling);
+        thor.computedCostrainedSolution(target_Dq,next_Q,target_scaling,thor.getState(),next_acc,updated_scaling, vh, p_human);
         
         // Update of the solver state and of the solution point
     
@@ -179,6 +180,18 @@ namespace openmore
         ThorTrajectoryProcessor::setWeigths(weigths);
         ThorTrajectoryProcessor::setIntervals(intervals);
         ThorTrajectoryProcessor::setConstraints();
+        return true;
+    }
+
+    bool ThorTrajectoryProcessor::init(const KinodynamicConstraintsPtr& constraints, const std::string& param_ns, const cnr_logger::TraceLoggerPtr& logger, const std::vector<Eigen::VectorXd>& path,  const QpWeigthPtr weigths, const QpIntervalsPtr intervals, const QpSafetyParametersPtr& safety_parameters, const pinocchio::Model& model, const std::vector<unsigned int> frame_ids)
+    {
+        openmore::SplineTrajectoryProcessor::init(constraints, param_ns, logger, path);
+        ThorTrajectoryProcessor::setWeigths(weigths);
+        ThorTrajectoryProcessor::setIntervals(intervals);
+        ThorTrajectoryProcessor::setConstraints();
+        ThorTrajectoryProcessor::setSafetyParameters(safety_parameters);
+        thor.setPinocchioModel(model);
+        thor.setFrameIds(frame_ids);
         return true;
     }
 
