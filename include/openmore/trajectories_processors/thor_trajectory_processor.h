@@ -2,7 +2,7 @@
 
 #include <openmore/trajectories_processors/spline_trajectory_processor.h>
 #include  <thor_math/thor_math.h>
-
+#include <pinocchio/algorithm/joint-configuration.hpp>
 /**
  * @file thor_trajectory_processor.h
  * @brief Contains the declaration of the ThorTrajectoryProcessor class.
@@ -39,6 +39,18 @@ public:
 };
 typedef std::shared_ptr<QpWeigth> QpWeigthPtr;
 
+struct QpSafetyParameters
+/** 
+ * @brief A Structure representing the safety parameters for the CBF.
+ */
+{
+public:
+  double a_s; // parameter from the SSM formula
+  double T_r; // parameter from the SSM formula
+  double C; // parameter from the SSM formula
+  double gamma; // parameter from the SSM formula
+};
+typedef std::shared_ptr<QpSafetyParameters> QpSafetyParametersPtr;
 
 class ThorTrajectoryProcessor;
 typedef std::shared_ptr<ThorTrajectoryProcessor> ThorTrajectoryProcessorPtr;
@@ -65,8 +77,7 @@ class ThorTrajectoryProcessor: public virtual SplineTrajectoryProcessor
    * @brief Default constructor.
    * Requires a call to init() aftwrwards.
    */
-    ThorTrajectoryProcessor():
-      SplineTrajectoryProcessor(){}
+    ThorTrajectoryProcessor() : SplineTrajectoryProcessor(){}
 
     /**
     * @brief Constructors.
@@ -74,41 +85,47 @@ class ThorTrajectoryProcessor: public virtual SplineTrajectoryProcessor
     ThorTrajectoryProcessor(const KinodynamicConstraintsPtr& constraints,
                             const std::string& param_ns,
                             const cnr_logger::TraceLoggerPtr& logger):
-      SplineTrajectoryProcessor(constraints,param_ns,logger){
+      SplineTrajectoryProcessor(constraints,param_ns,logger)
+      {
       ThorTrajectoryProcessor::setConstraints(constraints);
-    }
+      }
 
     ThorTrajectoryProcessor(const KinodynamicConstraintsPtr& constraints,
                             const std::string& param_ns,
                             const cnr_logger::TraceLoggerPtr& logger,
                             const std::vector<Eigen::VectorXd>& path):
-      SplineTrajectoryProcessor(constraints,param_ns,logger,path){
+      SplineTrajectoryProcessor(constraints,param_ns,logger,path)
+      {
       ThorTrajectoryProcessor::setConstraints(constraints);
-    }
+      }
 
     ThorTrajectoryProcessor(const KinodynamicConstraintsPtr& constraints,
                             const std::string& param_ns,
                             const cnr_logger::TraceLoggerPtr& logger,
                             const spline_order_t& spline_order):
-      SplineTrajectoryProcessor(constraints,param_ns,logger,spline_order){
+      SplineTrajectoryProcessor(constraints,param_ns,logger,spline_order)
+      {
       ThorTrajectoryProcessor::setConstraints(constraints);
-    }
+      }
 
     ThorTrajectoryProcessor(const KinodynamicConstraintsPtr& constraints,
                             const std::string& param_ns, const cnr_logger::TraceLoggerPtr& logger,
                             const std::vector<Eigen::VectorXd>& path,
                             const spline_order_t& spline_order):
-      SplineTrajectoryProcessor(constraints,param_ns,logger,path,spline_order){
+      SplineTrajectoryProcessor(constraints,param_ns,logger,path,spline_order)
+      {
       ThorTrajectoryProcessor::setConstraints(constraints);
-    }
+      }
 
     ThorTrajectoryProcessor(const KinodynamicConstraintsPtr& constraints,
                             const std::string& param_ns, const cnr_logger::TraceLoggerPtr& logger,
                             const std::vector<Eigen::VectorXd>& path,
                             const spline_order_t& spline_order,
                             const QpWeigthPtr weigths,
-                            const QpIntervalsPtr intervals):
-      SplineTrajectoryProcessor(constraints,param_ns,logger,path,spline_order){
+                            const QpIntervalsPtr intervals
+                            ):
+      SplineTrajectoryProcessor(constraints,param_ns,logger,path,spline_order)
+      {
         ThorTrajectoryProcessor::setWeigths(weigths);
         ThorTrajectoryProcessor::setIntervals(intervals);
         ThorTrajectoryProcessor::setConstraints(constraints);
@@ -118,7 +135,28 @@ class ThorTrajectoryProcessor: public virtual SplineTrajectoryProcessor
         thor.updateMatrices();
         }
       }
-
+      ThorTrajectoryProcessor(const KinodynamicConstraintsPtr& constraints,
+                              const std::string& param_ns, const cnr_logger::TraceLoggerPtr& logger,
+                              const std::vector<Eigen::VectorXd>& path,
+                              const spline_order_t& spline_order,
+                              const QpWeigthPtr weigths,
+                              const QpIntervalsPtr intervals,
+                              const QpSafetyParametersPtr& safety_parameters
+                              // TODO add SAFETY PARAMETERS, pinocchio model, pinocchio data, model frames to compute the cbf
+                              // TODO: modify the interpolate function to accept vh and ph
+                              // TODO check the init fcn 
+                              ):
+        SplineTrajectoryProcessor(constraints,param_ns,logger,path,spline_order){
+          ThorTrajectoryProcessor::setWeigths(weigths);
+          ThorTrajectoryProcessor::setIntervals(intervals);
+          ThorTrajectoryProcessor::setConstraints(constraints);
+          ThorTrajectoryProcessor::setSafetyParameters(safety_parameters);
+          thor.activateTorqueBounds(false);
+          if (thor.needUpdate())
+          { 
+          thor.updateMatrices();
+          }
+        }
     /**
       * @brief init Initializes the TrajectoryProcessor object. This function should be called when the void constructor is called and it is used mainly for plugins.
       * @param constraints The kinodynamics constraints of the robot to be considered for trajectory generation.
@@ -188,6 +226,8 @@ class ThorTrajectoryProcessor: public virtual SplineTrajectoryProcessor
      * @param initial_state A shared pointer to the initial state of the robot.
      */
     virtual void setInitialState(const openmore::RobotStatePtr& initial_state);
+
+    virtual void setSafetyParameters(const QpSafetyParametersPtr& safety_parameters);
 };
 
 
