@@ -5,7 +5,11 @@
 
 namespace openmore
 {
-
+    // bool ThorTrajectoryProcessor::interpolate(const double& time, TrjPointPtr& pnt, const double& target_scaling, double& updated_scaling)
+    // {
+    //     CNR_FATAL(logger_, "Target_scaling: "<<target_scaling);
+    //     return SplineTrajectoryProcessor::interpolate(time, pnt, target_scaling, updated_scaling);
+    // }
 bool ThorTrajectoryProcessor::interpolate(const double& time, TrjPointPtr& pnt, const double& target_scaling, double& updated_scaling)
 {
 
@@ -22,23 +26,23 @@ bool ThorTrajectoryProcessor::interpolate(const double& time, TrjPointPtr& pnt, 
     Eigen::VectorXd target_Dq(nc*n_ax);
     target_Dq.setOnes();
     
-    Eigen::VectorXd next_Q(n_ax);
+    Eigen::VectorXd next_Q(nc*n_ax);
     next_Q.setZero(); 
     
     // Interpolate with the spline class for each prediction time instant
     Eigen::VectorXd istants =  thor.getPredictionTimeInstant();
     for (int i = 0; i < istants.size(); i++){
-        if ( !openmore::SplineTrajectoryProcessor::interpolate(time+istants[i], pnt, target_scaling, updated_scaling) ){
+        if ( !openmore::SplineTrajectoryProcessor::interpolate(time+istants[i], pnt, 1, updated_scaling) ){
             return false;
         }
-        if (i==0){
-            // Assign values to traget vectors
-            next_Q.head(n_ax) = Eigen::VectorXd::Map(pnt->state_->pos_.data(), n_ax);
-        }
-
+        // if (i==0){
+        //     // Assign values to traget vectors
+        //     next_Q.head(n_ax) = Eigen::VectorXd::Map(pnt->state_->pos_.data(), n_ax);
+        // }
+        next_Q.segment(i*n_ax, n_ax) = Eigen::VectorXd::Map(pnt->state_->pos_.data(), n_ax);
         target_Dq.segment(i*n_ax, n_ax) = Eigen::VectorXd::Map(pnt->state_->vel_.data(), n_ax);        
     }
-    
+    // std::cout << "Target Dq: " << target_Dq.transpose() << std::endl;
     Eigen::VectorXd next_acc(n_ax);
     Eigen::VectorXd new_acc(n_ax);
 
