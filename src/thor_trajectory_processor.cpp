@@ -159,7 +159,7 @@ namespace openmore
         thor.setConstraints(qmax,qmin,Dqmax,DDqmax,tau_max);
 
     }
-    bool ThorTrajectoryProcessor::init(const KinodynamicConstraintsPtr& constraints, const std::string& param_ns, const cnr_logger::TraceLoggerPtr& logger, const QpWeigthPtr weigths, const QpIntervalsPtr intervals)
+    bool ThorTrajectoryProcessor::init(const KinodynamicConstraintsPtr& constraints, const std::string& param_ns, const cnr_logger::TraceLoggerPtr& logger, const QpWeigthPtr& weigths, const QpIntervalsPtr& intervals)
     {
         openmore::SplineTrajectoryProcessor::init(constraints, param_ns, logger);
         ThorTrajectoryProcessor::setWeigths(weigths);
@@ -174,7 +174,16 @@ namespace openmore
 
     }
 
-    bool ThorTrajectoryProcessor::init(const KinodynamicConstraintsPtr& constraints, const std::string& param_ns, const cnr_logger::TraceLoggerPtr& logger, const std::vector<Eigen::VectorXd>& path,  const QpWeigthPtr weigths, const QpIntervalsPtr intervals)
+    bool ThorTrajectoryProcessor::init(const KinodynamicConstraintsPtr& constraints, const std::string& param_ns, const cnr_logger::TraceLoggerPtr& logger, const QpWeigthPtr& weigths, const QpIntervalsPtr& intervals, const QpSafetyParametersPtr& safety_parameters, const pinocchio::Model& model, const std::vector<unsigned int> frame_ids)
+    {
+        ThorTrajectoryProcessor::init(constraints, param_ns, logger, weigths, intervals);
+        ThorTrajectoryProcessor::setSafetyParameters(safety_parameters);
+        thor.setPinocchioModel(model);
+        thor.setFrameIds(frame_ids);
+        return true;
+    }
+
+    bool ThorTrajectoryProcessor::init(const KinodynamicConstraintsPtr& constraints, const std::string& param_ns, const cnr_logger::TraceLoggerPtr& logger, const std::vector<Eigen::VectorXd>& path,  const QpWeigthPtr& weigths, const QpIntervalsPtr& intervals)
     {
         openmore::SplineTrajectoryProcessor::init(constraints, param_ns, logger, path);
         ThorTrajectoryProcessor::setWeigths(weigths);
@@ -183,12 +192,9 @@ namespace openmore
         return true;
     }
 
-    bool ThorTrajectoryProcessor::init(const KinodynamicConstraintsPtr& constraints, const std::string& param_ns, const cnr_logger::TraceLoggerPtr& logger, const std::vector<Eigen::VectorXd>& path,  const QpWeigthPtr weigths, const QpIntervalsPtr intervals, const QpSafetyParametersPtr& safety_parameters, const pinocchio::Model& model, const std::vector<unsigned int> frame_ids)
+    bool ThorTrajectoryProcessor::init(const KinodynamicConstraintsPtr& constraints, const std::string& param_ns, const cnr_logger::TraceLoggerPtr& logger, const std::vector<Eigen::VectorXd>& path,  const QpWeigthPtr& weigths, const QpIntervalsPtr& intervals, const QpSafetyParametersPtr& safety_parameters, const pinocchio::Model& model, const std::vector<unsigned int> frame_ids)
     {
-        openmore::SplineTrajectoryProcessor::init(constraints, param_ns, logger, path);
-        ThorTrajectoryProcessor::setWeigths(weigths);
-        ThorTrajectoryProcessor::setIntervals(intervals);
-        ThorTrajectoryProcessor::setConstraints();
+        ThorTrajectoryProcessor::init(constraints, param_ns, logger, path, weigths, intervals);
         ThorTrajectoryProcessor::setSafetyParameters(safety_parameters);
         thor.setPinocchioModel(model);
         thor.setFrameIds(frame_ids);

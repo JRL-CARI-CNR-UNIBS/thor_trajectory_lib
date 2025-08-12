@@ -172,11 +172,12 @@ class ThorTrajectoryProcessor: public virtual SplineTrajectoryProcessor
       * @param intervals The intervals for the receiding horizon.
       * @return
       */
-    virtual bool init(const KinodynamicConstraintsPtr& constraints, const std::string& param_ns, const cnr_logger::TraceLoggerPtr& logger, const QpWeigthPtr weigths, const QpIntervalsPtr intervals);
-    virtual bool init(const KinodynamicConstraintsPtr& constraints, const std::string& param_ns, const cnr_logger::TraceLoggerPtr& logger, const std::vector<Eigen::VectorXd>& path,  const QpWeigthPtr weigths, const QpIntervalsPtr intervals);
-    virtual bool init(const KinodynamicConstraintsPtr& constraints, const std::string& param_ns, const cnr_logger::TraceLoggerPtr& logger, const std::vector<Eigen::VectorXd>& path,  const QpWeigthPtr weigths, const QpIntervalsPtr intervals, const QpSafetyParametersPtr& safety_parameters, const pinocchio::Model& model, const std::vector<unsigned int> frame_ids);
+    virtual bool init(const KinodynamicConstraintsPtr& constraints, const std::string& param_ns, const cnr_logger::TraceLoggerPtr& logger, const QpWeigthPtr& weigths, const QpIntervalsPtr& intervals);
+    virtual bool init(const KinodynamicConstraintsPtr& constraints, const std::string& param_ns, const cnr_logger::TraceLoggerPtr& logger, const std::vector<Eigen::VectorXd>& path,  const QpWeigthPtr& weigths, const QpIntervalsPtr& intervals);
+    virtual bool init(const KinodynamicConstraintsPtr& constraints, const std::string& param_ns, const cnr_logger::TraceLoggerPtr& logger, const std::vector<Eigen::VectorXd>& path,  const QpWeigthPtr& weigths, const QpIntervalsPtr& intervals, const QpSafetyParametersPtr& safety_parameters, const pinocchio::Model& model, const std::vector<unsigned int> frame_ids);
+    virtual bool init(const KinodynamicConstraintsPtr& constraints, const std::string& param_ns, const cnr_logger::TraceLoggerPtr& logger, const QpWeigthPtr& weigths, const QpIntervalsPtr& intervals, const QpSafetyParametersPtr& safety_parameters, const pinocchio::Model& model, const std::vector<unsigned int> frame_ids);
 
-     /**
+    /**
     * @brief Interpolates a trajectory point at a given time.
     * @param time The time at which to interpolate.
     * @param pnt The interpolated trajectory point.
@@ -184,7 +185,7 @@ class ThorTrajectoryProcessor: public virtual SplineTrajectoryProcessor
     * @param updated_scaling Updated scaling factor computed by Thor interpolation.
     * @return True if the interpolation is successful, false otherwise.
     */
-    virtual bool interpolate(const double& time, TrjPointPtr& pnt, const double& target_scaling, double& updated_scaling, const Eigen::Vector3d &vh = Eigen::Vector3d::Zero(), const Eigen::Vector3d &p_human = Eigen::Vector3d::Zero());
+    virtual bool interpolate(const double& time, TrjPointPtr& pnt, const double& target_scaling, double& updated_scaling, const Eigen::Vector3d &vh = Eigen::Vector3d::Zero(), const Eigen::Vector3d &p_human = 100 * Eigen::Vector3d::Ones());
 
     /**
     * @brief Sets the weights for the trajectory processor.
