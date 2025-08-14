@@ -143,7 +143,8 @@ class ThorTrajectoryProcessor: public virtual SplineTrajectoryProcessor
                               const QpIntervalsPtr intervals,
                               const QpSafetyParametersPtr& safety_parameters,
                               const pinocchio::Model& model,
-                              const std::vector<unsigned int> frame_ids
+                              const std::vector<unsigned int> frame_ids,
+                              const double& num_p_h
                               // TODO add SAFETY PARAMETERS, pinocchio model, pinocchio data, model frames to compute the cbf
                               // TODO: modify the interpolate function to accept vh and ph
                               // TODO check the init fcn 
@@ -154,7 +155,7 @@ class ThorTrajectoryProcessor: public virtual SplineTrajectoryProcessor
           ThorTrajectoryProcessor::setConstraints(constraints);
           ThorTrajectoryProcessor::setSafetyParameters(safety_parameters);
           thor.setPinocchioModel(model);
-          thor.setFrameIds(frame_ids);
+          thor.setCbfIds(frame_ids, num_p_h);
           thor.activateTorqueBounds(false);
           if (thor.needUpdate())
           { 
@@ -174,8 +175,8 @@ class ThorTrajectoryProcessor: public virtual SplineTrajectoryProcessor
       */
     virtual bool init(const KinodynamicConstraintsPtr& constraints, const std::string& param_ns, const cnr_logger::TraceLoggerPtr& logger, const QpWeigthPtr& weigths, const QpIntervalsPtr& intervals);
     virtual bool init(const KinodynamicConstraintsPtr& constraints, const std::string& param_ns, const cnr_logger::TraceLoggerPtr& logger, const std::vector<Eigen::VectorXd>& path,  const QpWeigthPtr& weigths, const QpIntervalsPtr& intervals);
-    virtual bool init(const KinodynamicConstraintsPtr& constraints, const std::string& param_ns, const cnr_logger::TraceLoggerPtr& logger, const std::vector<Eigen::VectorXd>& path,  const QpWeigthPtr& weigths, const QpIntervalsPtr& intervals, const QpSafetyParametersPtr& safety_parameters, const pinocchio::Model& model, const std::vector<unsigned int> frame_ids);
-    virtual bool init(const KinodynamicConstraintsPtr& constraints, const std::string& param_ns, const cnr_logger::TraceLoggerPtr& logger, const QpWeigthPtr& weigths, const QpIntervalsPtr& intervals, const QpSafetyParametersPtr& safety_parameters, const pinocchio::Model& model, const std::vector<unsigned int> frame_ids);
+    virtual bool init(const KinodynamicConstraintsPtr& constraints, const std::string& param_ns, const cnr_logger::TraceLoggerPtr& logger, const std::vector<Eigen::VectorXd>& path,  const QpWeigthPtr& weigths, const QpIntervalsPtr& intervals, const QpSafetyParametersPtr& safety_parameters, const pinocchio::Model& model, const std::vector<unsigned int> frame_ids, const double& num_p_h);
+    virtual bool init(const KinodynamicConstraintsPtr& constraints, const std::string& param_ns, const cnr_logger::TraceLoggerPtr& logger, const QpWeigthPtr& weigths, const QpIntervalsPtr& intervals, const QpSafetyParametersPtr& safety_parameters, const pinocchio::Model& model, const std::vector<unsigned int> frame_ids, const double& num_p_h);
 
     /**
     * @brief Interpolates a trajectory point at a given time.
@@ -185,8 +186,13 @@ class ThorTrajectoryProcessor: public virtual SplineTrajectoryProcessor
     * @param updated_scaling Updated scaling factor computed by Thor interpolation.
     * @return True if the interpolation is successful, false otherwise.
     */
-    virtual bool interpolate(const double& time, TrjPointPtr& pnt, const double& target_scaling, double& updated_scaling, const Eigen::Vector3d &vh = Eigen::Vector3d::Zero(), const Eigen::Vector3d &p_human = 100 * Eigen::Vector3d::Ones());
-
+    virtual bool interpolate(const double& time, TrjPointPtr& pnt, const double& target_scaling, double& updated_scaling, const std::vector<Eigen::Vector3d>& vh, const std::vector<Eigen::Vector3d>& p_human);
+    bool interpolate(const double& time, TrjPointPtr& pnt, const double& target_scaling, double& updated_scaling)
+    {
+      std::vector<Eigen::Vector3d> default_v_h(thor.getNumPh(), Eigen::Vector3d::Zero() );
+      std::vector<Eigen::Vector3d> default_p_h(thor.getNumPh(), Eigen::Vector3d::Constant(100.0));
+      return interpolate(time, pnt, target_scaling, updated_scaling, default_v_h, default_p_h);
+    }
     /**
     * @brief Sets the weights for the trajectory processor.
     * 

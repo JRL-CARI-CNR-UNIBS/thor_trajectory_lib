@@ -10,7 +10,7 @@ namespace openmore
     //     CNR_FATAL(logger_, "Target_scaling: "<<target_scaling);
     //     return SplineTrajectoryProcessor::interpolate(time, pnt, target_scaling, updated_scaling);
     // }
-    bool ThorTrajectoryProcessor::interpolate(const double& time, TrjPointPtr& pnt, const double& target_scaling, double& updated_scaling, const Eigen::Vector3d &vh, const Eigen::Vector3d &p_human)
+    bool ThorTrajectoryProcessor::interpolate(const double& time, TrjPointPtr& pnt, const double& target_scaling, double& updated_scaling, const std::vector<Eigen::Vector3d>& vh, const std::vector<Eigen::Vector3d>& p_human)
     {
 
         int nc = intervals_->nc;
@@ -174,12 +174,12 @@ namespace openmore
 
     }
 
-    bool ThorTrajectoryProcessor::init(const KinodynamicConstraintsPtr& constraints, const std::string& param_ns, const cnr_logger::TraceLoggerPtr& logger, const QpWeigthPtr& weigths, const QpIntervalsPtr& intervals, const QpSafetyParametersPtr& safety_parameters, const pinocchio::Model& model, const std::vector<unsigned int> frame_ids)
+    bool ThorTrajectoryProcessor::init(const KinodynamicConstraintsPtr& constraints, const std::string& param_ns, const cnr_logger::TraceLoggerPtr& logger, const QpWeigthPtr& weigths, const QpIntervalsPtr& intervals, const QpSafetyParametersPtr& safety_parameters, const pinocchio::Model& model, const std::vector<unsigned int> frame_ids, const double& num_p_h)
     {
         ThorTrajectoryProcessor::init(constraints, param_ns, logger, weigths, intervals);
         ThorTrajectoryProcessor::setSafetyParameters(safety_parameters);
         thor.setPinocchioModel(model);
-        thor.setFrameIds(frame_ids);
+        thor.setCbfIds(frame_ids, num_p_h);
         return true;
     }
 
@@ -192,12 +192,12 @@ namespace openmore
         return true;
     }
 
-    bool ThorTrajectoryProcessor::init(const KinodynamicConstraintsPtr& constraints, const std::string& param_ns, const cnr_logger::TraceLoggerPtr& logger, const std::vector<Eigen::VectorXd>& path,  const QpWeigthPtr& weigths, const QpIntervalsPtr& intervals, const QpSafetyParametersPtr& safety_parameters, const pinocchio::Model& model, const std::vector<unsigned int> frame_ids)
+    bool ThorTrajectoryProcessor::init(const KinodynamicConstraintsPtr& constraints, const std::string& param_ns, const cnr_logger::TraceLoggerPtr& logger, const std::vector<Eigen::VectorXd>& path,  const QpWeigthPtr& weigths, const QpIntervalsPtr& intervals, const QpSafetyParametersPtr& safety_parameters, const pinocchio::Model& model, const std::vector<unsigned int> frame_ids, const double& num_p_h)
     {
         ThorTrajectoryProcessor::init(constraints, param_ns, logger, path, weigths, intervals);
         ThorTrajectoryProcessor::setSafetyParameters(safety_parameters);
         thor.setPinocchioModel(model);
-        thor.setFrameIds(frame_ids);
+        thor.setCbfIds(frame_ids, num_p_h);
         return true;
     }
 
