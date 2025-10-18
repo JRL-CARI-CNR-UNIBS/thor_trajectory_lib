@@ -95,7 +95,7 @@ cd cnr_common
 git submodule update --init --recursive
 . update_submodules.sh
 
-
+echo "QUIIIIIII"
 
 # Optional: minimal deps (toolchain + colcon + Eigen) — always consult cnr_common/README.md for your OS
 if $INSTALL_DEPS; then
