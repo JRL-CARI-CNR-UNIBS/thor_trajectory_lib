@@ -130,6 +130,4 @@ colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE="$BUILD_TYPE" --p
 echo ""
 echo "===================== DONE ====================="
 echo "Source the workspace before using the packages:"
-echo "  source \"$WS/install/setup.bash\""
 echo ""
-echo "IMPORTANT: Check $SRC/cnr_common/README.md for any additional OS-specific prerequisites or steps."
