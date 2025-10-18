@@ -89,7 +89,6 @@ for name in "${!REPOS[@]}"; do
     git clone --branch "$branch" --depth 1 "$url" "$name"
   fi
 done
-popd >/dev/null
 
 git clone --recurse-submodules https://github.com/JRL-CARI-CNR-UNIBS/cnr_common.git
 cd cnr_common
