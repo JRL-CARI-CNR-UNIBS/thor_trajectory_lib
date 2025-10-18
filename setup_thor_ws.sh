@@ -97,18 +97,18 @@ git submodule update --init --recursive
 
 echo "QUIIIIIII"
 
-# Optional: minimal deps (toolchain + colcon + Eigen) — always consult cnr_common/README.md for your OS
-if $INSTALL_DEPS; then
-  if command -v apt-get >/dev/null 2>&1; then
-    sudo apt-get update
-    sudo apt-get install -y --no-install-recommends \
-      build-essential cmake git \
-      python3 python3-pip python3-colcon-common-extensions \
-      pkg-config libeigen3-dev
-  else
-    echo "NOTE: --install-deps only supports apt-get. For other platforms, follow cnr_common/README.md."
-  fi
-fi
+# # Optional: minimal deps (toolchain + colcon + Eigen) — always consult cnr_common/README.md for your OS
+# if $INSTALL_DEPS; then
+#   if command -v apt-get >/dev/null 2>&1; then
+#     sudo apt-get update
+#     sudo apt-get install -y --no-install-recommends \
+#       build-essential cmake git \
+#       python3 python3-pip python3-colcon-common-extensions \
+#       pkg-config libeigen3-dev
+#   else
+#     echo "NOTE: --install-deps only supports apt-get. For other platforms, follow cnr_common/README.md."
+#   fi
+# fi
 cd ../..
 
 sudo apt update
