@@ -66,7 +66,7 @@ fi
 echo "Ensuring dependencies live in the same workspace (WS/src)"
 declare -A REPOS
 REPOS["thor_core"]="https://github.com/JRL-CARI-CNR-UNIBS/thor_core.git@ros-free"
-REPOS["trajectories_processors_lib"]="https://github.com/JRL-CARI-CNR-UNIBS/trajectories_processors_lib.git@main"
+REPOS["trajectories_processors_lib"]="https://github.com/JRL-CARI-CNR-UNIBS/trajectories_processors_lib.git@master"
 
 # pushd "$SRC" >/dev/null
 for name in "${!REPOS[@]}"; do
