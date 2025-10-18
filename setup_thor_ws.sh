@@ -65,7 +65,6 @@ fi
 
 echo "Ensuring dependencies live in the same workspace (WS/src)"
 declare -A REPOS
-REPOS["cnr_common"]="https://github.com/JRL-CARI-CNR-UNIBS/cnr_common.git@main"
 REPOS["thor_core"]="https://github.com/JRL-CARI-CNR-UNIBS/thor_core.git@ros-free"
 REPOS["trajectories_processors_lib"]="https://github.com/JRL-CARI-CNR-UNIBS/trajectories_processors_lib.git@main"
 
@@ -92,6 +91,13 @@ for name in "${!REPOS[@]}"; do
 done
 popd >/dev/null
 
+git clone --recurse-submodules https://github.com/JRL-CARI-CNR-UNIBS/cnr_common.git
+cd cnr_common
+git submodule update --init --recursive
+. update_submodules.sh
+
+
+
 # Optional: minimal deps (toolchain + colcon + Eigen) — always consult cnr_common/README.md for your OS
 if $INSTALL_DEPS; then
   if command -v apt-get >/dev/null 2>&1; then
@@ -104,7 +110,10 @@ if $INSTALL_DEPS; then
     echo "NOTE: --install-deps only supports apt-get. For other platforms, follow cnr_common/README.md."
   fi
 fi
-cd ..
+cd ../..
+
+sudo apt update
+sudo apt -y install libboost-all-dev libeigen3-dev libyaml-cpp-dev libpoco-dev liblog4cxx-dev libgtest-dev
 # Build
 pushd "$WS" >/dev/null
 if $CLEAN; then
