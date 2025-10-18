@@ -26,6 +26,8 @@ Follow these steps to fetch **thor_trajectory_lib** and its dependencies into a 
 # 1) Create a workspace and clone this repo
 mkdir thor_ws
 cd thor_ws
+mkdir src
+cd src
 git clone https://github.com/JRL-CARI-CNR-UNIBS/thor_trajectory_lib.git
 
 # 2) Run the workspace setup from inside the repo
@@ -39,7 +41,7 @@ bash setup_thor_ws.sh -j 8 -b Release --install-deps
 #     --install-deps      : minimal toolchain + colcon + Eigen (apt-based distros)
 
 # 3) Source the workspace
-cd ..
+cd ../..
 source install/setup.bash
 ```
 

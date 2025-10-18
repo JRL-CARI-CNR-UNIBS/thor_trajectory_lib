@@ -22,7 +22,7 @@
 #   - Reminds you to follow cnr_common/README.md for any extra steps.
 #
 set -euo pipefail
-
+cd ..
 JOBS=${JOBS:-"$(nproc || echo 4)"}
 BUILD_TYPE=${BUILD_TYPE:-"Release"}
 UPDATE=false
@@ -51,17 +51,17 @@ if git -C "$SCRIPT_DIR" rev-parse --show-toplevel >/dev/null 2>&1; then
   REPO_ROOT="$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel)"
 fi
 
-# Define workspace as the parent of thor_trajectory_lib
-WS="$(cd "$REPO_ROOT/.." && pwd)"
-SRC="$WS/src"
+# # Define workspace as the parent of thor_trajectory_lib
+# WS="$(cd "$REPO_ROOT/.." && pwd)"
+# SRC="$WS/src"
 
-echo "Detected workspace root: $WS"
-mkdir -p "$SRC"
+# echo "Detected workspace root: $WS"
+# mkdir -p "$SRC"
 
-# Ensure thor_trajectory_lib is visible at WS/src/thor_trajectory_lib
-if [[ "$REPO_ROOT" != "$SRC/thor_trajectory_lib" ]]; then
-  ln -sfn "$REPO_ROOT" "$SRC/thor_trajectory_lib"
-fi
+# # Ensure thor_trajectory_lib is visible at WS/src/thor_trajectory_lib
+# if [[ "$REPO_ROOT" != "$SRC/thor_trajectory_lib" ]]; then
+#   ln -sfn "$REPO_ROOT" "$SRC/thor_trajectory_lib"
+# fi
 
 echo "Ensuring dependencies live in the same workspace (WS/src)"
 declare -A REPOS
@@ -104,7 +104,7 @@ if $INSTALL_DEPS; then
     echo "NOTE: --install-deps only supports apt-get. For other platforms, follow cnr_common/README.md."
   fi
 fi
-
+cd ..
 # Build
 pushd "$WS" >/dev/null
 if $CLEAN; then
