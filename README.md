@@ -16,27 +16,42 @@ This library provides a `ThorTrajectoryProcessor` that blends spline interpolati
 
 ---
 
-## Build & Install
 
-### Prerequisites
+## Installation (colcon workspace)
 
-- C++20 toolchain and CMake ≥ 3.16.
-- The following packages discoverable via `find_package`:
-  - `Eigen3` (Core, Dense, Geometry)
-  - `thor_math`
-  - `trajectories_processors_lib`
-  - `cnr_logger`
-  - `cnr_param`
-
-### Configure & build
+Follow these steps to fetch **thor_trajectory_lib** and its dependencies into a single colcon workspace and build everything.  
+**Note:** Please also follow any OS-specific notes in [`cnr_common/README.md`](../cnr_common/README.md) after the build, if required.
 
 ```bash
+# 1) Create a workspace and clone this repo
+mkdir thor_ws
+cd thor_ws
 git clone https://github.com/JRL-CARI-CNR-UNIBS/thor_trajectory_lib.git
+
+# 2) Run the workspace setup from inside the repo
 cd thor_trajectory_lib
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
-cmake --build build -j
-sudo cmake --install build
+bash setup_thor_ws.sh -j 8 -b Release --install-deps
+#   Flags:
+#     -j / --jobs         : parallel build workers (default: nproc)
+#     -b / --build-type   : Release | Debug | RelWithDebInfo (default: Release)
+#     --update            : git fetch/pull if repos already exist
+#     --clean             : wipe build/install/log before building
+#     --install-deps      : minimal toolchain + colcon + Eigen (apt-based distros)
+
+# 3) Source the workspace
+cd ..
+source install/setup.bash
 ```
+
+This script will:
+- Detect the workspace root as the parent directory of `thor_trajectory_lib` (`../`).
+- Ensure `WS/src/` exists and add `thor_trajectory_lib` there (via symlink if needed).
+- Clone the required dependencies into the **same** `WS/src`:
+  - `JRL-CARI-CNR-UNIBS/cnr_common` (branch `main`)
+  - `JRL-CARI-CNR-UNIBS/thor_core` (branch `ros-free`)
+  - `JRL-CARI-CNR-UNIBS/trajectories_processors_lib` (branch `main`)
+- Build everything with `colcon`.
+- Remind you to check `cnr_common/README.md` for any extra steps for your OS.
 
 ### Consuming in another CMake project
 
