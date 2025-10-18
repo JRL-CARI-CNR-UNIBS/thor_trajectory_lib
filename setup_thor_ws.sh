@@ -114,7 +114,6 @@ cd ../..
 sudo apt update
 sudo apt -y install libboost-all-dev libeigen3-dev libyaml-cpp-dev libpoco-dev liblog4cxx-dev libgtest-dev
 # Build
-pushd "$WS" >/dev/null
 if $CLEAN; then
   echo "[*] Cleaning build/ install/ log/"
   rm -rf build install log
