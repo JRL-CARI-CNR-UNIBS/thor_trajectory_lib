@@ -69,7 +69,7 @@ REPOS["cnr_common"]="https://github.com/JRL-CARI-CNR-UNIBS/cnr_common.git@main"
 REPOS["thor_core"]="https://github.com/JRL-CARI-CNR-UNIBS/thor_core.git@ros-free"
 REPOS["trajectories_processors_lib"]="https://github.com/JRL-CARI-CNR-UNIBS/trajectories_processors_lib.git@main"
 
-pushd "$SRC" >/dev/null
+# pushd "$SRC" >/dev/null
 for name in "${!REPOS[@]}"; do
   entry="${REPOS[$name]}"
   url="${entry%@*}"
