@@ -188,6 +188,12 @@ class ThorTrajectoryProcessor: public virtual SplineTrajectoryProcessor
      * @param initial_state A shared pointer to the initial state of the robot.
      */
     virtual void setInitialState(const openmore::RobotStatePtr& initial_state);
+
+    virtual void set_trajectory(const std::deque<openmore::TrjPointPtr>& trajectory);
+    virtual bool computeTrj() override;
+    virtual bool computeTrj(const RobotStatePtr& initial_state, const RobotStatePtr& final_state) override;
+
+    virtual TrajectoryProcessorBasePtr clone() override;
 };
 
 

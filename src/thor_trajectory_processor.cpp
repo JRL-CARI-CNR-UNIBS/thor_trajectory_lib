@@ -35,14 +35,9 @@ bool ThorTrajectoryProcessor::interpolate(const double& time, TrjPointPtr& pnt, 
         if ( !openmore::SplineTrajectoryProcessor::interpolate(time+istants[i], pnt, 1, updated_scaling) ){
             return false;
         }
-        // if (i==0){
-        //     // Assign values to traget vectors
-        //     next_Q.head(n_ax) = Eigen::VectorXd::Map(pnt->state_->pos_.data(), n_ax);
-        // }
         next_Q.segment(i*n_ax, n_ax) = Eigen::VectorXd::Map(pnt->state_->pos_.data(), n_ax);
         target_Dq.segment(i*n_ax, n_ax) = Eigen::VectorXd::Map(pnt->state_->vel_.data(), n_ax);        
     }
-    // std::cout << "Target Dq: " << target_Dq.transpose() << std::endl;
     Eigen::VectorXd next_acc(n_ax);
     Eigen::VectorXd new_acc(n_ax);
 
@@ -54,23 +49,6 @@ bool ThorTrajectoryProcessor::interpolate(const double& time, TrjPointPtr& pnt, 
     
     // Update of the solver state and of the solution point
    
-
-    // if (!previous_position_.size()){
-    //     previous_position_.resize(n_ax);
-    //     previous_position_ = next_pos;
-    // }
-    // next_vel = (next_pos - previous_position_)/dt_;
-    
-    // if(!previous_velocity_.size()){
-    //     previous_velocity_.resize(n_ax);
-    //     previous_velocity_ = next_vel;
-    // }
-    
-    // new_acc = (next_vel - previous_velocity_)/dt_;
-    // previous_velocity_ = next_vel;
-    // previous_position_ = next_pos;
-    
-    // std::cout << "Next acc: " << next_acc.transpose() << std::endl;
     thor.updateState(next_acc);
     next_pos = thor.getState().head(n_ax);
     next_vel = thor.getState().tail(n_ax);
@@ -78,26 +56,7 @@ bool ThorTrajectoryProcessor::interpolate(const double& time, TrjPointPtr& pnt, 
     pnt->state_->acc_.assign(new_acc.data(), new_acc.data() + new_acc.size());
     pnt->state_->vel_.assign(next_vel.data(), next_vel.data() + next_vel.size());
     pnt->state_->pos_.assign(next_pos.data(), next_pos.data() + next_pos.size());
-    // std::printf("Target scaling Thor processor: %f\n", target_scaling);
-    // std::printf("Updated scaling Thor processor: %f\n", updated_scaling);
-
-
-    // std::printf("Next pos: ");
-    // for (int i = 0; i < next_pos.size(); ++i) {
-    //     std::printf("%f ", next_pos[i]);
-    // }
-    // std::printf("\n");
-    // std::printf("Next vel: ");
-    // for (int i = 0; i < next_vel.size(); ++i) {
-    //     std::printf("%f ", next_vel[i]/2);
-    // }
-    // std::printf("\n");
-    // std::printf("Next acc: ");
-    // for (int i = 0; i < next_acc.size(); ++i) {
-    //     std::printf("%f ", next_acc[i]);
-    // }
-    // std::printf("\n");
-
+    
     return true;
 }
 
@@ -126,7 +85,6 @@ void ThorTrajectoryProcessor::setIntervals(const QpIntervalsPtr intervals)
 }
 
 void ThorTrajectoryProcessor::setConstraints(){
-    std::cout << kinodynamic_constraints_->max_pos_ << std::endl;
     Eigen::VectorXd qmax = kinodynamic_constraints_->max_pos_;
     Eigen::VectorXd Dqmax = kinodynamic_constraints_->max_vel_;
     Eigen::VectorXd DDqmax = kinodynamic_constraints_->max_acc_;
@@ -142,7 +100,6 @@ void ThorTrajectoryProcessor::setConstraints(){
 }
 
 void ThorTrajectoryProcessor::setConstraints(const KinodynamicConstraintsPtr& constraints){
-    std::cout << constraints->max_pos_ << std::endl;
     Eigen::VectorXd qmax = constraints->max_pos_;
     Eigen::VectorXd Dqmax = constraints->max_vel_;
     Eigen::VectorXd DDqmax = constraints->max_acc_;
@@ -187,5 +144,37 @@ void ThorTrajectoryProcessor::setInitialState(const openmore::RobotStatePtr& ini
     state.tail(nax) = Eigen::VectorXd::Map(initial_state->vel_.data(), nax);
     thor.setInitialState(state);
 }
+void ThorTrajectoryProcessor::set_trajectory(const std::deque<openmore::TrjPointPtr>& trajectory)
+{
+    trj_ = trajectory;
+}
 
+bool ThorTrajectoryProcessor::computeTrj()
+{
+    return true;
+}
+bool ThorTrajectoryProcessor::computeTrj(const RobotStatePtr& initial_state, const RobotStatePtr& final_state)
+{
+    return true;
+}
+
+openmore::TrajectoryProcessorBasePtr ThorTrajectoryProcessor::clone() 
+{
+    auto cloned = std::make_shared<ThorTrajectoryProcessor>();
+    // Clone base class members
+    cloned->openmore::SplineTrajectoryProcessor::operator=(*this);
+
+    // Deep copy or clone pointers if necessary
+    if (weigths_)
+        cloned->weigths_ = std::make_shared<QpWeigth>(*weigths_);
+    if (intervals_)
+        cloned->intervals_ = std::make_shared<QpIntervals>(*intervals_);
+    if (kinodynamic_constraints_)
+        cloned->kinodynamic_constraints_ = std::make_shared<KinodynamicConstraints>(*kinodynamic_constraints_);
+    cloned->trj_ = trj_; // std::deque of shared_ptr, shallow copy is fine
+
+    // Copy or clone thor object if needed (assuming copyable)
+    cloned->thor = this->thor;
+    return cloned;
+}
 }

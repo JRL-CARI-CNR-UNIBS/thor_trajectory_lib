@@ -34,4 +34,6 @@
 *.txt.user*
 *kdev4*
 *.autosave
+
+# Folders
 .vscode
