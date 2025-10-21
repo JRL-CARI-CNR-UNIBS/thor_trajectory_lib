@@ -3,6 +3,7 @@
 </p>
 
 ## Status
+
 [![colcon Build Check (ROS-Free)](https://github.com/JRL-CARI-CNR-UNIBS/thor_trajectory_lib/actions/workflows/build_colcon.yaml/badge.svg)](https://github.com/JRL-CARI-CNR-UNIBS/thor_trajectory_lib/actions/workflows/build_colcon.yaml)
 [![clang-format check](https://github.com/JRL-CARI-CNR-UNIBS/thor_trajectory_lib/actions/workflows/clang-format.yaml/badge.svg)](https://github.com/JRL-CARI-CNR-UNIBS/thor_trajectory_lib/actions/workflows/clang-format.yaml)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/4db6cdc0e9a1430d962b2113698af578)](https://app.codacy.com/gh/JRL-CARI-CNR-UNIBS/thor_trajectory_lib/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
@@ -24,7 +25,6 @@ This library provides a `ThorTrajectoryProcessor` that blends spline interpolati
 - **Exported CMake target**: `thor_trajectory_lib::thor_trajectory_lib`.
 
 ---
-
 
 ## Installation (colcon workspace)
 
@@ -57,11 +57,15 @@ source install/setup.bash
 This script will:
 - Create a workspace directory for the package and the src directory. symlink if needed).
 - Clone the required dependencies into the `thor_ws/src` directory:
+
   - `JRL-CARI-CNR-UNIBS/cnr_common` (branch `main`)
   - `JRL-CARI-CNR-UNIBS/thor_core` (branch `ros-free`)
   - `JRL-CARI-CNR-UNIBS/trajectories_processors_lib` (branch `main`)
+
 - Build everything with `colcon`.
+
 - Source the newly created workspace
+
 ### Consuming in another CMake project
 
 ```cmake
@@ -151,6 +155,7 @@ Key methods:
 ---
 
 ## Work in progress
+
 This repository is a work in progress and is continuously evolving. As such, it is not free of bugs.
  **Please be careful if you use it on real hardware and ensure all necessary safety measures are in place**.
 
@@ -159,6 +164,7 @@ If you find errors or if you have some suggestions, [please let us know](https:/
 We are actively seeking support for further development. If you're interested, please reach out via email at <mailto::f.parma@phd.poliba.it>.
 
 ## How to cite
+
 Plain text:
 ```
 TODO
@@ -170,10 +176,13 @@ TODO
 ```
 
 ## Developer Contact
+
 ### **Authors**
+
 - Federico Parma (<mailto::f.parma@phd.poliba.it>)
 - Cesare Tonola (<mailto::cesare.tonola@cnr.it>)
 - Manuel Beschi (<mailto::manuel.beschi@unibs.it>)
 
 ## Acknowledgements
+
 **OpenMORE** is developed with [CNR-STIIMA](http://www.stiima.cnr.it/) and [University of Brescia](https://www.unibs.it/en).
