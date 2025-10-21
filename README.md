@@ -3,9 +3,9 @@
 </p>
 
 ## Status
-[![build check](https://github.com/JRL-CARI-CNR-UNIBS/graph_core/actions/workflows/build_and_install.yaml/badge.svg)]())
+[![colcon Build Check (ROS-Free)](https://github.com/JRL-CARI-CNR-UNIBS/thor_trajectory_lib/actions/workflows/build_colcon.yaml/badge.svg)](https://github.com/JRL-CARI-CNR-UNIBS/thor_trajectory_lib/actions/workflows/build_colcon.yaml)
 [![clang-format check](https://github.com/JRL-CARI-CNR-UNIBS/thor_trajectory_lib/actions/workflows/clang-format.yaml/badge.svg)](https://github.com/JRL-CARI-CNR-UNIBS/thor_trajectory_lib/actions/workflows/clang-format.yaml)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/1755d91be93e4c86912929a5e9ad04e8)]()
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/4db6cdc0e9a1430d962b2113698af578)](https://app.codacy.com/gh/JRL-CARI-CNR-UNIBS/thor_trajectory_lib/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 ![Status](https://img.shields.io/badge/License%20-%20BSD3%20-%20green)
 
 Developed and tested for Ubuntu 20.04, 22.04 and Ubuntu-latest.
@@ -77,16 +77,16 @@ target_link_libraries(app PRIVATE thor_trajectory_lib::thor_trajectory_lib)
 
 A complete example of the library usage for interpolation can be found in `example/test_thor.cpp`. The example provides a script for:
 
-* Creation of all structures needed by the class.
-* Initialization of the `ThorTrajectoryProcessor` object.
-* The interpolation procedure.
+- Creation of all structures needed by the class.
+- Initialization of the `ThorTrajectoryProcessor` object.
+- The interpolation procedure.
 
 ### Trajectory Generation
 
 At the current state, the trajectory must be given to the object from outside. To include the trajectory generation method inside the class, create a class that inherits from `ThorTrajectoryProcessor` and overrides the following methods:
 
-* `bool ThorTrajectoryProcessor::computeTrj()`
-* `bool ThorTrajectoryProcessor::computeTrj(const RobotStatePtr& initial_state, const RobotStatePtr& final_state)`
+- `bool ThorTrajectoryProcessor::computeTrj()`
+- `bool ThorTrajectoryProcessor::computeTrj(const RobotStatePtr& initial_state, const RobotStatePtr& final_state)`
   
 ---
 
