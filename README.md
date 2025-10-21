@@ -1,4 +1,4 @@
-# thor_trajectory_lib
+![![thor_logo.jpeg](../../../Desktop/thor_logo.jpeg "![thor_logo.jpeg")
 
 **Thor-based trajectory processing for robotic motion generation.**
 This library provides a `ThorTrajectoryProcessor` that blends spline interpolation with a receding-horizon MPC step powered by **thor_math**. It exposes light configuration structs for horizon and cost weights, integrates kinodynamic constraints, and outputs time-parameterized position/velocity/acceleration along a path.
