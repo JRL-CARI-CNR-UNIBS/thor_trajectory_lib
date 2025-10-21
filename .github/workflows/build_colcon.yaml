@@ -20,12 +20,32 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      # 2.2. Prepara l'ambiente (Abilita 'universe' e aggiorna)
-      # Il tuo script .sh si occuperà di installare tutto
-      - name: Prepare Environment (Enable Universe Repo)
+     # 2.2. Installa TUTTE le dipendenze
+      # Questo passaggio prepara l'ambiente completo.
+      - name: Install All Dependencies
         run: |
-          sudo add-apt-repository universe
+          # Abilita il repository 'universe' (per colcon, eigen, ecc.)
           sudo apt-get update
+          sudo apt-get install -y software-properties-common
+          sudo add-apt-repository universe
+          
+          # Aggiorna di nuovo dopo aver aggiunto 'universe'
+          sudo apt-get update
+          
+          # Installa tutto il necessario
+          sudo apt-get install -y --no-install-recommends \
+            build-essential \
+            cmake \
+            git \
+            python3-pip \
+            python3-colcon-common-extensions \
+            pkg-config \
+            libeigen3-dev \
+            libboost-all-dev \
+            libyaml-cpp-dev \
+            libpoco-dev \
+            liblog4cxx-dev \
+            libgtest-dev
 
       # 2.3. Rende eseguibile lo script
       - name: Make script executable

@@ -1,6 +1,5 @@
 #include <openmore/trajectories_processors/thor_trajectory_processor.h>
 #include <openmore/trajectories_processors/spline_trajectory_processor.h>
-#include <yaml-cpp/yaml.h>
 #include <fstream>
 #include <iostream>
 

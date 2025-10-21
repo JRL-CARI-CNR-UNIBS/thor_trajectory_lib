@@ -111,8 +111,8 @@ echo "QUIIIIIII"
 # fi
 cd ../..
 
-sudo apt update
 sudo add-apt-repository universe
+sudo apt update
 sudo apt install python3-colcon-common-extensions
 sudo apt -y install libboost-all-dev libeigen3-dev libyaml-cpp-dev libpoco-dev liblog4cxx-dev libgtest-dev
 # Build
