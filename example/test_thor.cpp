@@ -64,7 +64,7 @@ int main()
   double lambda_tau = 0.0;        // weight for the torque
 
   openmore::QpWeigthPtr weigths =
-      std::make_shared<openmore::QpWeigth>(lambda_acc, lambda_tau, lambda_scaling, lambda_pos, lambda_jerk);
+      std::make_shared<openmore::QpWeigth>(lambda_acc, lambda_scaling, lambda_pos, lambda_jerk);
 
   // Constraints modify with the required ones
   Eigen::VectorXd qmax(nax);
