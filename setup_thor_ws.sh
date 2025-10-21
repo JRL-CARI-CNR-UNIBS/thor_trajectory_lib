@@ -44,6 +44,8 @@ echo "Ensuring dependencies live in the same workspace (WS/src)"
 declare -A REPOS
 REPOS["thor_core"]="https://github.com/JRL-CARI-CNR-UNIBS/thor_core.git@ros-free"
 REPOS["trajectories_processors_lib"]="https://github.com/JRL-CARI-CNR-UNIBS/trajectories_processors_lib.git@master"
+REPOS["rdyn_core"]="https://github.com/CNR-STIIMA-IRAS/rosdyn.git@modern_cmake"
+REPOS["rdyncnr_control_toolbox"]="https://github.com/CNR-STIIMA-IRAS/cnr_control_toolbox.git@modern_cmake"
 
 # pushd "$SRC" >/dev/null
 for name in "${!REPOS[@]}"; do
@@ -89,7 +91,7 @@ echo "QUIIIIIII"
 cd ../..
 
 sudo apt update
-sudo apt -y install libboost-all-dev libeigen3-dev libyaml-cpp-dev libpoco-dev liblog4cxx-dev libgtest-dev
+sudo apt -y install libboost-all-dev libeigen3-dev libyaml-cpp-dev libpoco-dev liblog4cxx-dev libgtest-dev liburdfdom-dev liburdfdom-headers-dev liburdfdom-tools
 # Build
 if $CLEAN; then
   echo "[*] Cleaning build/ install/ log/"
