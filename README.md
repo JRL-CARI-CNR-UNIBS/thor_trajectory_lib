@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/thor_logo.jpeg?raw=true" alt="Thor Logo" width="40%" style="display: block; margin: auto;">
+  <img src="docs/thor_logo_transparent_background.png?raw=true" alt="Thor Logo" width="40%" style="display: block; margin: auto;">
 </p>
 
 
