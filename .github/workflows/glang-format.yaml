@@ -1,0 +1,35 @@
+# Nome del workflow (lo vedrai su GitHub)
+name: 'clang-format check'
+
+# Quando deve partire questo test?
+# In questo caso, ogni volta che fai "push" sul branch "main"
+# o quando qualcuno apre una "Pull Request" verso "main"
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  # Nome del "lavoro" da fare
+  formatting-check:
+    # Sistema operativo su cui girare (Ubuntu è perfetto)
+    runs-on: ubuntu-latest
+    
+    # Passaggi da eseguire
+    steps:
+      # 1. "Scarica" il codice dal tuo repository sulla macchina virtuale
+      - uses: actions/checkout@v4
+
+      # 2. Installa clang-format (lo stesso che hai fatto tu!)
+      - name: Install clang-format
+        run: sudo apt-get update && sudo apt-get install -y clang-format
+
+      # 3. Esegui il controllo
+      # Usiamo 'find' per cercare tutti i file sorgente
+      # e 'clang-format --dry-run --Werror'
+      # --dry-run: non modifica i file, dice solo se sono formattati male
+      # --Werror: se qualcosa è formattato male, fallisce il test
+      - name: Run clang-format style check
+        run: |
+          find . -name "*.cpp" -o -name "*.h" | xargs clang-format --dry-run --Werror -style=file
