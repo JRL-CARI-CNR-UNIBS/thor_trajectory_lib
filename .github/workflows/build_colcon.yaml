@@ -20,14 +20,12 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      # 2.2. Installa le dipendenze di base
-      # Aggiorna apt e installa 'colcon' e i suoi plugin.
-      # Lo script 'setup_thor_ws.sh' installerà poi il resto
-      # (come build-essential, cmake, Eigen) usando '--install-deps'
-      - name: Install base dependencies (colcon)
+      # 2.2. Prepara l'ambiente (Abilita 'universe' e aggiorna)
+      # Il tuo script .sh si occuperà di installare tutto
+      - name: Prepare Environment (Enable Universe Repo)
         run: |
+          sudo add-apt-repository universe
           sudo apt-get update
-          sudo apt-get install -y python3-colcon-common-extensions
 
       # 2.3. Rende eseguibile lo script
       - name: Make script executable
