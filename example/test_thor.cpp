@@ -61,7 +61,6 @@ int main()
   double lambda_scaling = 1e+02;  // weight for the scaling
   double lambda_pos = 1e+03;      // weight for the position error
   double lambda_jerk = 1.0e-09;   // weight for the jerk
-  double lambda_tau = 0.0;        // weight for the torque
 
   openmore::QpWeigthPtr weigths =
       std::make_shared<openmore::QpWeigth>(lambda_acc, lambda_scaling, lambda_pos, lambda_jerk);
