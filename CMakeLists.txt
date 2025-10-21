@@ -22,6 +22,11 @@ endif()
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+include_directories(
+    ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/src
+)
+
 find_package(Eigen3 REQUIRED COMPONENTS Core Dense Geometry)
 find_package(cnr_logger REQUIRED)
 find_package(cnr_param REQUIRED)
