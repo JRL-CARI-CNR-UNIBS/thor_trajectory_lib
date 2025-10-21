@@ -1,7 +1,4 @@
 #include <openmore/trajectories_processors/thor_trajectory_processor.h>
-#include <openmore/trajectories_processors/spline_trajectory_processor.h>
-#include <fstream>
-#include <iostream>
 
 // Function to create an example trajectory
 std::deque<openmore::TrjPointPtr> create_trajectory()
