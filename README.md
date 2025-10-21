@@ -1,5 +1,5 @@
 | ![Thor Logo](docs/thor_logo.jpeg?raw=true) |
-
+|:--:|
 
 ## Status
 
