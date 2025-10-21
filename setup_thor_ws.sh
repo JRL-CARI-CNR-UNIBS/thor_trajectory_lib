@@ -27,7 +27,6 @@ JOBS=${JOBS:-"$(nproc || echo 4)"}
 BUILD_TYPE=${BUILD_TYPE:-"Release"}
 UPDATE=false
 CLEAN=false
-INSTALL_DEPS=false
 
 # # Define workspace as the parent of thor_trajectory_lib
 # WS="$(cd "$REPO_ROOT/.." && pwd)"
