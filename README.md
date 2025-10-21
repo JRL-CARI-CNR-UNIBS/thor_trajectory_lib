@@ -165,7 +165,7 @@ TODO
 ## Developer Contact
 ### **Authors**
 - Federico Parma (<mailto::f.parma@phd.poliba.it>)
-- Cesare Tonola (<mailto::c.tonola001@unibs.it>)
+- Cesare Tonola (<mailto::cesare.tonola@cnr.it>)
 - Manuel Beschi (<mailto::manuel.beschi@unibs.it>)
 
 ## Acknowledgements
