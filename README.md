@@ -2,6 +2,13 @@
   <img src="docs/thor_logo.jpeg?raw=true" alt="Thor Logo" width="40%" style="display: block; margin: auto;">
 </p>
 
+## Status
+[![build check](https://github.com/JRL-CARI-CNR-UNIBS/graph_core/actions/workflows/build_and_install.yaml/badge.svg)]())
+[![clang-format check](https://github.com/JRL-CARI-CNR-UNIBS/thor_trajectory_lib/actions/workflows/clang-format.yaml/badge.svg)](https://github.com/JRL-CARI-CNR-UNIBS/thor_trajectory_lib/actions/workflows/clang-format.yaml)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/1755d91be93e4c86912929a5e9ad04e8)]()
+![Status](https://img.shields.io/badge/License%20-%20BSD3%20-%20green)
+
+Developed and tested for Ubuntu 20.04, 22.04 and Ubuntu-latest.
 
 **Thor-based trajectory processing for robotic motion generation.**
 This library provides a `ThorTrajectoryProcessor` that blends spline interpolation with a receding-horizon MPC step powered by **thor_math**. It exposes light configuration structs for horizon and cost weights, integrates kinodynamic constraints, and outputs time-parameterized position/velocity/acceleration along a path.
