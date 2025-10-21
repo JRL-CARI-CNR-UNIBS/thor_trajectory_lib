@@ -21,18 +21,16 @@ jobs:
         uses: actions/checkout@v4
 
      # 2.2. Installa TUTTE le dipendenze
-      # Questo passaggio prepara l'ambiente completo.
       - name: Install All Dependencies
         run: |
-          # Abilita il repository 'universe' (per colcon, eigen, ecc.)
-          sudo apt-get update
-          sudo apt-get install -y software-properties-common
-          sudo add-apt-repository universe
+          # 1. Modifica /etc/apt/sources.list per aggiungere 'universe' e 'multiverse'
+          # Questo è più affidabile di "add-apt-repository" negli script CI
+          sudo sed -i 's/^deb \([^ ]*\) \([^ ]*\) main restricted$/deb \1 \2 main restricted universe multiverse/' /etc/apt/sources.list
           
-          # Aggiorna di nuovo dopo aver aggiunto 'universe'
+          # 2. Aggiorna le liste DOPO aver modificato il file
           sudo apt-get update
           
-          # Installa tutto il necessario
+          # 3. Installa tutto il necessario
           sudo apt-get install -y --no-install-recommends \
             build-essential \
             cmake \

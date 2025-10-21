@@ -1,5 +1,4 @@
 #include <openmore/trajectories_processors/thor_trajectory_processor.h>
-#include <thor_math/thor_math.h>
 
 namespace openmore
 {
