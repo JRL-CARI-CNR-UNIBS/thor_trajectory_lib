@@ -6,9 +6,9 @@ name: 'clang-format check'
 # o quando qualcuno apre una "Pull Request" verso "main"
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   # Nome del "lavoro" da fare
