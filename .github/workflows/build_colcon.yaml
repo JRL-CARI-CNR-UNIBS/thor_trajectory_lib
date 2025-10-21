@@ -1,5 +1,5 @@
 # Nome del workflow
-name: 'colcon Build Check'
+name: 'colcon Build Check (ROS-Free)'
 
 # Trigger: si avvia su push o pull request a 'main'
 on:
@@ -9,12 +9,9 @@ on:
     branches: [ master ]
 
 jobs:
-  build-ros:
-    # 1. Definiamo l'ambiente (es. ROS 2 Humble)
-    # Cambia 'humble' se usi un'altra versione (es. iron, rolling)
+  build-ros-free:
+    # 1. Ambiente: Ubuntu pulito (senza Docker o ROS)
     runs-on: ubuntu-latest
-    container:
-      image: ros:humble-ros-base
 
     # 2. Elenco dei passaggi
     steps:
@@ -23,17 +20,21 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      # 2.2. (Opzionale ma consigliato) Aggiorna apt
-      # Utile prima di eseguire uno script che installa dipendenze
-      - name: Update apt
-        run: sudo apt-get update
+      # 2.2. Installa le dipendenze di base
+      # Aggiorna apt e installa 'colcon' e i suoi plugin.
+      # Lo script 'setup_thor_ws.sh' installerà poi il resto
+      # (come build-essential, cmake, Eigen) usando '--install-deps'
+      - name: Install base dependencies (colcon)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-colcon-common-extensions
 
-      # 2.3. Rende eseguibile lo script (se non lo è già)
-      # Assumendo che 'setup_thor_ws.sh' sia nella root del repo
+      # 2.3. Rende eseguibile lo script
       - name: Make script executable
         run: chmod +x setup_thor_ws.sh
 
       # 2.4. Esegue lo script di setup e build
-      # Usiamo i flag che hai specificato
+      # Lo script si occuperà di installare build-essential, CMake, Eigen
+      # e poi eseguirà colcon build
       - name: Run setup_thor_ws.sh
         run: bash setup_thor_ws.sh -j 8 -b Release --install-deps
