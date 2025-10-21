@@ -101,11 +101,7 @@ int main()
   openmore::RobotStatePtr ptr = processor->getTrj()[0]->state_;
   processor->setInitialState(ptr);
 
-  double scl = 1;
-  double target_scaling = 1;
-  double t = 0;
-  double t_nom = 0;
-  double dt = st;
+  double t = 0, t_nom = 0, dt = st, scl = 1.0, target_scaling = 1.0;
 
   double max_t = processor->getTrjDuration();
   // std::cout << spline_processor->trj_.back()->state_->vel_[0] << std::endl;
