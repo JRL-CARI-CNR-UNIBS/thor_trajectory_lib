@@ -104,7 +104,7 @@ if ! command -v colcon >/dev/null 2>&1; then
 fi
 
 echo "[*] Building with colcon (type: $BUILD_TYPE, jobs: $JOBS)"
-colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE="$BUILD_TYPE" --parallel-workers "$JOBS"
+colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE="$BUILD_TYPE" --parallel-workers "$JOBS" -DRETRIVE_DEPENDENCIES=OFF
 
 echo ""
 echo "===================== DONE ====================="
