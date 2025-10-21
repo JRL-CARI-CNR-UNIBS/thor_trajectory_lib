@@ -46,15 +46,13 @@ source install/setup.bash
 ```
 
 This script will:
-- Detect the workspace root as the parent directory of `thor_trajectory_lib` (`../`).
-- Ensure `WS/src/` exists and add `thor_trajectory_lib` there (via symlink if needed).
-- Clone the required dependencies into the **same** `WS/src`:
+- Create a workspace directory for the package and the src directory. symlink if needed).
+- Clone the required dependencies into the `thor_ws/src` directory:
   - `JRL-CARI-CNR-UNIBS/cnr_common` (branch `main`)
   - `JRL-CARI-CNR-UNIBS/thor_core` (branch `ros-free`)
   - `JRL-CARI-CNR-UNIBS/trajectories_processors_lib` (branch `main`)
 - Build everything with `colcon`.
-- Remind you to check `cnr_common/README.md` for any extra steps for your OS.
-
+- Source the newly created workspace
 ### Consuming in another CMake project
 
 ```cmake
