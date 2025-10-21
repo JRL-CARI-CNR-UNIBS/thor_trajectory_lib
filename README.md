@@ -1,6 +1,5 @@
-<p align="center">
-  <img src="docs/thor_logo.jpeg?raw=true" alt="Thor Logo" width="40%" style="display: block; margin: auto;">
-</p>
+| ![Thor Logo](docs/thor_logo.jpeg?raw=true) |
+
 
 ## Status
 
@@ -55,6 +54,7 @@ source install/setup.bash
 ```
 
 This script will:
+
 - Create a workspace directory for the package and the src directory. symlink if needed).
 - Clone the required dependencies into the `thor_ws/src` directory:
 
