@@ -29,28 +29,6 @@ UPDATE=false
 CLEAN=false
 INSTALL_DEPS=false
 
-while [[ $# -gt 0 ]]; do
-  case "$1" in
-    -j|--jobs) JOBS="$2"; shift 2;;
-    -b|--build-type) BUILD_TYPE="$2"; shift 2;;
-    --update) UPDATE=true; shift;;
-    --clean) CLEAN=true; shift;;
-    --install-deps) INSTALL_DEPS=true; shift;;
-    -h|--help)
-      grep -E '^# ' "$0" | sed 's/^# //'
-      exit 0;;
-    *)
-      echo "Unknown argument: $1"; exit 1;;
-  esac
-done
-
-# Find this repo's root
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$SCRIPT_DIR"
-if git -C "$SCRIPT_DIR" rev-parse --show-toplevel >/dev/null 2>&1; then
-  REPO_ROOT="$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel)"
-fi
-
 # # Define workspace as the parent of thor_trajectory_lib
 # WS="$(cd "$REPO_ROOT/.." && pwd)"
 # SRC="$WS/src"
@@ -111,9 +89,7 @@ echo "QUIIIIIII"
 # fi
 cd ../..
 
-sudo add-apt-repository universe
 sudo apt update
-sudo apt install python3-colcon-common-extensions
 sudo apt -y install libboost-all-dev libeigen3-dev libyaml-cpp-dev libpoco-dev liblog4cxx-dev libgtest-dev
 # Build
 if $CLEAN; then
