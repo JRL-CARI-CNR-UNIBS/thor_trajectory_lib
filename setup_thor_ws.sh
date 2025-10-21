@@ -105,6 +105,7 @@ fi
 
 echo "[*] Building with colcon (type: $BUILD_TYPE, jobs: $JOBS)"
 colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DRETRIVE_DEPENDENCIES=OFF --parallel-workers "$JOBS" --packages-select cnr_yaml
+set +u
 source install/setup.bash
 colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DRETRIVE_DEPENDENCIES=OFF --parallel-workers "$JOBS" 
 
