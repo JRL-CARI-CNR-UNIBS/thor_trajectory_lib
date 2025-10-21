@@ -48,7 +48,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${DEPS})
 
 add_library("${PROJECT_NAME}::${PROJECT_NAME}" ALIAS ${PROJECT_NAME})
 
-add_executable(test_thor src/test_thor.cpp)
+add_executable(test_thor example/test_thor.cpp)
 target_link_libraries(test_thor PUBLIC ${PROJECT_NAME})
 
 # Install

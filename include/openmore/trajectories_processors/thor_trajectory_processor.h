@@ -32,9 +32,8 @@ struct QpWeigth
 public:
    
   double lambda_acc;      // weight for the acceleration
-  double lambda_tau;      // weight for the torque
   double lambda_scaling;  // weight for the scaling
-  double lambda_clik;     // weight for the clik
+  double lambda_pos;      // weight for the position
   double lambda_jerk;     // weight for the jerk
 };
 typedef std::shared_ptr<QpWeigth> QpWeigthPtr;

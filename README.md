@@ -3,8 +3,7 @@
 **Thor-based trajectory processing for robotic motion generation.**
 This library provides a `ThorTrajectoryProcessor` that blends spline interpolation with a receding-horizon MPC step powered by **thor_math**. It exposes light configuration structs for horizon and cost weights, integrates kinodynamic constraints, and outputs time-parameterized position/velocity/acceleration along a path.
 
-> C++20, exported as a shared library with a CMake config package. Depends on Eigen3, `thor_math`, `trajectories_processors_lib`, `cnr_logger`, and `cnr_param`.
-
+> C++20, exported as a shared library with a CMake config package. Depends on Eigen3, [`thor_core`](https://github.com/JRL-CARI-CNR-UNIBS/thor_core) for MPC implementation, ,[`trajectories_processors_lib`](https://github.com/JRL-CARI-CNR-UNIBS/trajectories_processors_lib) for basic interpolation structures, and [`cnr_common`](https://github.com/JRL-CARI-CNR-UNIBS/cnr_common) for utility functions .
 ---
 
 ## Features
@@ -66,43 +65,19 @@ target_link_libraries(app PRIVATE thor_trajectory_lib::thor_trajectory_lib)
 
 ## Quick Start (C++)
 
-```cpp
-#include <openmore/trajectories_processors/thor_trajectory_processor.h>
+A complete example of the library usage for interpolation can be found in `example/test_thor.cpp`. The example provides a script for:
 
-using namespace openmore;
+* Creation of all structures needed by the class.
+* Initialization of the `ThorTrajectoryProcessor` object.
+* The interpolation procedure.
 
-int main() {
-  auto intervals = std::make_shared<QpIntervals>();
-  intervals->nax = 7;
-  intervals->nc  = 20;
-  intervals->control_horizon = 0.4;
-  intervals->st  = 0.02;
+### Trajectory Generation
 
-  auto weights = std::make_shared<QpWeigth>();
-  weights->lambda_acc     = 1.0;
-  weights->lambda_tau     = 0.0;
-  weights->lambda_scaling = 0.1;
-  weights->lambda_clik    = 0.0;
-  weights->lambda_jerk    = 0.01;
+At the current state, the trajectory must be given to the object from outside. To include the trajectory generation method inside the class, create a class that inherits from `ThorTrajectoryProcessor` and overrides the following methods:
 
-  KinodynamicConstraintsPtr constraints = /* ... */;
-  cnr_logger::TraceLoggerPtr logger     = /* ... */;
-  std::string param_ns = "/thor";
-
-  ThorTrajectoryProcessor proc(constraints, param_ns, logger);
-  proc.init(constraints, param_ns, logger, weights, intervals);
-
-  RobotStatePtr q0 = std::make_shared<RobotState>();
-  q0->pos_ = {/* ... */};
-  q0->vel_ = {/* ... */};
-  proc.setInitialState(q0);
-
-  double t = 0.0, target_scaling = 1.0, updated_scaling = 1.0;
-  TrjPointPtr p = std::make_shared<TrjPoint>();
-  bool ok = proc.interpolate(t, p, target_scaling, updated_scaling);
-}
-```
-
+* `bool ThorTrajectoryProcessor::computeTrj()`
+* `bool ThorTrajectoryProcessor::computeTrj(const RobotStatePtr& initial_state, const RobotStatePtr& final_state)`
+  
 ---
 
 ## API Overview
@@ -110,13 +85,37 @@ int main() {
 ### Configuration structs
 
 - `QpIntervals` — receding horizon parameters:
-  - `int nax;`
-  - `int nc;`
-  - `double control_horizon;`
-  - `double st;`
+  - `int nax;`: number of degrees of freedom
+  - `int nc;`: number of control and prediction instants (the instnts are supposed to coincide)
+  - `double control_horizon;`: the MPC control horizon
+  - `double st;`: the MPC sampling time
 
-- `QpWeigth` — objective weights:
-  - `lambda_acc`, `lambda_tau`, `lambda_scaling`, `lambda_clik`, `lambda_jerk`
+- `QpWeigth` — MPC cost function weights:
+  - `double lambda_acc`: the weight on acceleration error
+  - `double lambda_scaling`: the weight on scaling (trajectory speed adjustment)
+  - `double lambda_pos`: the weight on position error 
+  - `double lambda_jerk`: the weight on jerk minimization
+  - The weight on velocity error is supposed to be equal to 1
+
+- `robot_state` — Represents a robot state, including position, velocity, acceleration, and effort:
+  - `std::vector<double> pos_`
+  - `std::vector<double> vel_`
+  - `std::vector<double> acc_`
+  - `std::vector<double> eff_`
+
+- `TrjPoint` — Represents a trajectory point, consisting of a robot state and a time from the trajectory start.
+  - `robot_state state_`
+  - `double time_from_start_`
+
+- `KinodynamicConstraints` — Represents the kinodynamic constraints of the robot.
+  - `Eigen::VectorXd min_pos_`
+  - `Eigen::VectorXd min_vel_`
+  - `Eigen::VectorXd min_acc_`
+  - `Eigen::VectorXd min_eff_`
+  - `Eigen::VectorXd max_pos_`
+  - `Eigen::VectorXd max_vel_`
+  - `Eigen::VectorXd max_acc_`
+  - `Eigen::VectorXd max_eff_`
 
 ### Core class
 
@@ -141,24 +140,30 @@ Key methods:
 
 ---
 
-## Directory Structure
+## Work in progress
+This repository is a work in progress and is continuously evolving. As such, it is not free of bugs.
+ **Please be careful if you use it on real hardware and ensure all necessary safety measures are in place**.
 
+If you find errors or if you have some suggestions, [please let us know](https://github.com/JRL-CARI-CNR-UNIBS/thor_trajectory_lib/issues).
+
+We are actively seeking support for further development. If you're interested, please reach out via email at <mailto::f.parma@phd.poliba.it>.
+
+## How to cite
+Plain text:
 ```
-include/openmore/trajectories_processors/thor_trajectory_processor.h
-src/thor_trajectory_processor.cpp
-cmake_config/thor_trajectory_libConfig.cmake.in
-CMakeLists.txt
-package.xml
+TODO
 ```
 
----
+BibTex:
+```
+TODO
+```
 
-## License
+## Developer Contact
+### **Authors**
+- Federico Parma (<mailto::f.parma@phd.poliba.it>)
+- Cesare Tonola (<mailto::c.tonola001@unibs.it>)
+- Manuel Beschi (<mailto::manuel.beschi@unibs.it>)
 
-The repository doesn’t declare a license. Please add one (e.g., MIT or BSD).
-
----
-
-## Acknowledgments
-
-Built on **thor_math**, **trajectories_processors_lib**, **Eigen3**, **cnr_logger**, and **cnr_param**.
+## Acknowledgements
+**OpenMORE** is developed with [CNR-STIIMA](http://www.stiima.cnr.it/) and [University of Brescia](https://www.unibs.it/en).

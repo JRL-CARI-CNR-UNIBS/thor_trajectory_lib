@@ -63,12 +63,12 @@ bool ThorTrajectoryProcessor::interpolate(const double& time, TrjPointPtr& pnt, 
 void ThorTrajectoryProcessor::setWeigths(const QpWeigthPtr weigths)
 {
     double lambda_acc = weigths->lambda_acc;
-    double lambda_clik = weigths->lambda_clik;
-    double lambda_tau = weigths->lambda_tau;
+    double lambda_pos = weigths->lambda_pos;
+    double lambda_tau = 0.0; //weigths->lambda_tau;
     double lambda_scaling = weigths->lambda_scaling;
     double lambda_jerk = weigths->lambda_jerk;
     weigths_ = weigths;
-    thor.setWeigthFunction(lambda_acc,lambda_tau,lambda_jerk,lambda_scaling,lambda_clik);
+    thor.setWeigthFunction(lambda_acc,lambda_tau,lambda_jerk,lambda_scaling,lambda_pos);
 
 
 }
