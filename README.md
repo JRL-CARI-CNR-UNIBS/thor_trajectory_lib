@@ -2,7 +2,7 @@
   <img src="docs/thor_logo.jpeg?raw=true" alt="Thor Logo" width="40%" style="display: block; margin: auto;">
 </p>
 
-## Status
+## Status 
 
 [![colcon Build Check (ROS-Free)](https://github.com/JRL-CARI-CNR-UNIBS/thor_trajectory_lib/actions/workflows/build_colcon.yaml/badge.svg)](https://github.com/JRL-CARI-CNR-UNIBS/thor_trajectory_lib/actions/workflows/build_colcon.yaml)
 [![clang-format check](https://github.com/JRL-CARI-CNR-UNIBS/thor_trajectory_lib/actions/workflows/clang-format.yaml/badge.svg)](https://github.com/JRL-CARI-CNR-UNIBS/thor_trajectory_lib/actions/workflows/clang-format.yaml)
