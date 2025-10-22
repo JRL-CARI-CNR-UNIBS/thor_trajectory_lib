@@ -168,8 +168,7 @@ We are actively seeking support for further development. If you're interested, p
 
 Plain text:
 ```
-F. Parma, C. Tonola and M. Beschi, "Motion Execution Algorithm for Smooth Dynamic Replanning in HRC," _2025 IEEE 30th International Conference on Emerging Technologies and Factory Automation (ETFA)_, Porto, Portugal, 2025, pp. 1-7, doi: 10.1109/ETFA65518.2025.11205540.
-
+F. Parma, C. Tonola and M. Beschi, "Motion Execution Algorithm for Smooth Dynamic Replanning in HRC," 2025 IEEE 30th International Conference on Emerging Technologies and Factory Automation (ETFA), Porto, Portugal, 2025, pp. 1-7, doi: 10.1109/ETFA65518.2025.11205540.
 ```
 
 BibTex:
@@ -184,8 +183,6 @@ BibTex:
   number={},
   pages={1-7},
   doi={10.1109/ETFA65518.2025.11205540}}
-
-
 ```
 
 ## Developer Contact
